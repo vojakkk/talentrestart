@@ -7,6 +7,8 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Layout } from "@/components/Layout";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import ScrollToTop from "@/components/ScrollToTop";
 import Index from "./pages/Index";
 import Athletes from "./pages/Athletes";
 import Employers from "./pages/Employers";
@@ -33,6 +35,7 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
+              <ScrollToTop />
               <Layout>
                 <Routes>
                   <Route path="/" element={<Index />} />
@@ -47,8 +50,10 @@ const App = () => (
                   <Route path="/profile/athlete" element={<AthleteProfile />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
-                  <Route path="/blog" element={<Blog />} />
-                  <Route path="/blog/:id" element={<BlogPostDetails />} />
+                  <Route element={<ProtectedRoute />}>
+                    <Route path="/blog" element={<Blog />} />
+                    <Route path="/blog/:id" element={<BlogPostDetails />} />
+                  </Route>
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Layout>

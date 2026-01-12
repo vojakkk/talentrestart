@@ -37,15 +37,22 @@ export const Header: React.FC = () => {
   const role = user?.user_metadata?.role || user?.user_metadata?.user_role || user?.user_metadata?.account_type;
 
   const navLinks = [
-    { href: '/', label: t('nav.home') },
+    // Home link changes based on login status
+    {
+      href: '/',
+      label: user ? (role === 'athlete' ? 'Moje Kariéra' : 'Přehled') : t('nav.home')
+    },
     // Only show Athletes link if not logged in OR logged in as athlete
-    ...(!user || role === 'athlete' ? [{ href: '/athletes', label: t('nav.athletes') }] : []),
+    ...(!user || role === 'athlete' ? [{
+      href: '/athletes',
+      label: user ? 'Kariérní Tipy' : t('nav.athletes')
+    }] : []),
     // Only show Employers and Pricing links if not logged in OR logged in as employer
     ...(!user || role === 'employer' ? [
       { href: '/employers', label: t('nav.employers') },
       { href: '/pricing', label: t('nav.pricing') }
     ] : []),
-    { href: '/blog', label: t('nav.blog') },
+    ...(user ? [{ href: '/blog', label: t('nav.blog') }] : []),
     { href: '/contact', label: t('nav.contact') },
   ];
 

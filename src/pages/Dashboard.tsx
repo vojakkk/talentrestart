@@ -8,7 +8,6 @@ import {
     User,
     Settings,
     Briefcase,
-    FileText,
     TrendingUp,
     Bell,
     Award,
@@ -18,7 +17,15 @@ import {
     Search,
     Filter,
     Mail,
-    Smartphone
+    Smartphone,
+    Lock,
+    Eye,
+    Zap,
+    Target,
+    Clock,
+    ShieldAlert,
+    CreditCard,
+    Users
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
@@ -34,16 +41,98 @@ interface Athlete {
     created_at: string;
 }
 
+// --- Components ---
+
+const SidebarItem = ({ icon: Icon, label, active = false, badge = null, onClick }: any) => (
+    <button
+        onClick={onClick}
+        className={cn(
+            "w-full flex items-center justify-between p-4 rounded-xl transition-all duration-200 group",
+            active ? "bg-primary text-primary-foreground shadow-md" : "hover:bg-muted text-muted-foreground hover:text-foreground"
+        )}
+    >
+        <div className="flex items-center gap-3">
+            <Icon className="w-5 h-5" />
+            <span className="font-bold text-sm tracking-wide">{label}</span>
+        </div>
+        {badge && (
+            <span className={cn(
+                "px-2 py-0.5 rounded-full text-[10px] font-black uppercase",
+                active ? "bg-white/20" : "bg-primary/10 text-primary"
+            )}>{badge}</span>
+        )}
+    </button>
+);
+
+const MarketPulseWidget = () => (
+    <div className="bg-card border border-border rounded-3xl p-6 space-y-6 shadow-sm ring-1 ring-border/50">
+        <div className="flex items-center justify-between">
+            <h3 className="font-black text-sm uppercase tracking-widest flex items-center gap-2 text-muted-foreground">
+                <TrendingUp className="w-4 h-4 text-red-500" />
+                Market Pulse
+            </h3>
+            <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+            </span>
+        </div>
+        <div className="space-y-4">
+            {[
+                { text: "Competitor X viewed 'Pavel N.' (Ice Hockey)", time: "2m ago" },
+                { text: "3 new enterprise contracts signed today", time: "15m ago" },
+                { text: "Top Talent 'Jana K.' received 2 offers", time: "1h ago", highlight: true }
+            ].map((item, i) => (
+                <div key={i} className="flex gap-3 items-start text-sm border-l-2 border-muted pl-3 py-1">
+                    <span className="text-xs font-mono text-muted-foreground whitespace-nowrap">{item.time}</span>
+                    <p className={cn("font-medium leading-tight", item.highlight ? "text-red-500 font-bold" : "text-foreground")}>
+                        {item.text}
+                    </p>
+                </div>
+            ))}
+        </div>
+        <div className="p-4 bg-muted/30 rounded-xl border border-dashed border-border text-xs text-muted-foreground font-medium text-center">
+            🔒 Upgrade to see precise competitor names
+        </div>
+    </div>
+);
+
+const LockedCandidateCard = () => (
+    <div className="relative group overflow-hidden rounded-[2.5rem] bg-card border border-border shadow-sm opacity-80 hover:opacity-100 transition-opacity">
+        <div className="absolute inset-0 backdrop-blur-[6px] bg-background/60 z-10 flex flex-col items-center justify-center p-8 text-center space-y-4">
+            <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-2">
+                <Lock className="w-8 h-8 text-muted-foreground" />
+            </div>
+            <div>
+                <h3 className="text-xl font-black">Hidden High-Potential</h3>
+                <p className="text-muted-foreground font-medium text-sm mt-2">This candidate matches 98% of your criteria.</p>
+            </div>
+            <Button variant="restart" className="rounded-full px-8 font-black shadow-lg">
+                Upgrade to Unlock
+            </Button>
+        </div>
+        {/* Fake content behind blur */}
+        <div className="p-8 space-y-6 filter blur-sm grayscale opacity-50">
+            <div className="flex gap-4">
+                <div className="w-20 h-20 bg-muted rounded-2xl" />
+                <div className="space-y-4 flex-1">
+                    <div className="h-6 w-3/4 bg-muted rounded-full" />
+                    <div className="h-4 w-1/2 bg-muted rounded-full" />
+                </div>
+            </div>
+        </div>
+    </div>
+);
+
+// --- Main Dashboard Component ---
+
 const Dashboard: React.FC = () => {
     const { user, signOut } = useAuth();
     const { language } = useLanguage();
     const [athletes, setAthletes] = useState<Athlete[]>([]);
-    const [filteredAthletes, setFilteredAthletes] = useState<Athlete[]>([]);
-    const [searchQuery, setSearchQuery] = useState('');
     const [isLoading, setIsLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState('overview');
 
-    // Extract user info
-    const firstName = user?.user_metadata?.first_name || 'Uživatel';
+    const firstName = user?.user_metadata?.first_name || 'User';
     const role = user?.user_metadata?.role || user?.user_metadata?.user_role || user?.user_metadata?.account_type || 'athlete';
     const isAthlete = role === 'athlete';
 
@@ -66,7 +155,6 @@ const Dashboard: React.FC = () => {
 
             if (error) throw error;
             setAthletes(data || []);
-            setFilteredAthletes(data || []);
         } catch (error) {
             console.error('Error fetching athletes:', error);
         } finally {
@@ -74,409 +162,298 @@ const Dashboard: React.FC = () => {
         }
     };
 
-    useEffect(() => {
-        const query = searchQuery.toLowerCase();
-        const filtered = athletes.filter(a =>
-        (a.first_name?.toLowerCase().includes(query) ||
-            a.last_name?.toLowerCase().includes(query) ||
-            a.sports_career?.toLowerCase().includes(query) ||
-            a.summary?.toLowerCase().includes(query))
-        );
-        setFilteredAthletes(filtered);
-    }, [searchQuery, athletes]);
-
-    const stats = isAthlete
-        ? [
-            { label: 'Zhlédnutí profilu', value: '24' },
-            { label: 'Otevřené přihlášky', value: '3' },
-            { label: 'Nabídky ke schůzce', value: '1' },
-        ]
-        : [
-            { label: 'Aktivní inzeráty', value: '5' },
-            { label: 'Dostupní sportovci', value: athletes.length.toString() },
-            { label: 'Naplánované pohovory', value: '4' },
-        ];
-
-    const actions = isAthlete
-        ? [
-            { title: 'Dokončit profil', icon: User, color: 'bg-talent/10 text-talent', description: 'Zbývá 30% k dosažení plného profilu.', href: '/profile/athlete' },
-            { title: 'AI asistence', icon: Sparkles, color: 'bg-restart/10 text-restart', description: 'Přeložte své sportovní úspěchy do byznysu.', href: '/profile/athlete' },
-            { title: 'Nahrát životopis', icon: FileText, color: 'bg-muted text-foreground', description: 'Ukažte zaměstnavatelům své silné stránky.', href: '/profile/athlete' },
-        ]
-        : [
-            { title: 'Vytvořit inzerát', icon: Briefcase, color: 'bg-restart/10 text-restart', description: 'Oslovte disciplinované talenty.' },
-            { title: 'Hledat sportovce', icon: User, color: 'bg-talent/10 text-talent', description: 'Filtrujte podle sportovní disciplíny.' },
-            { title: 'Nastavení firmy', icon: Settings, color: 'bg-muted text-foreground', description: 'Upravte profil svého týmu.' },
-        ];
-
-    return (
-        <div className="min-h-screen bg-muted/20 pb-20 overflow-hidden">
-            {/* Role-Specific Hero Background */}
-            <div className="relative">
-                <div className={cn(
-                    "absolute top-0 left-0 w-full h-[300px] -z-10",
-                    isAthlete
-                        ? "bg-gradient-to-br from-talent/20 via-background to-restart/10"
-                        : "bg-gradient-to-br from-restart/20 via-background to-talent/10"
-                )} />
-                <div className="absolute top-0 right-0 w-full h-[300px] -z-10 opacity-30">
-                    <img
-                        src={isAthlete
-                            ? "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&q=80&w=1500"
-                            : "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=1500"
-                        }
-                        className="w-full h-full object-cover mask-gradient-to-b"
-                    />
-                </div>
-            </div>
-
-            {/* Dashboard Header */}
-            <div className="container pt-12 mb-12">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
-                    <div className="space-y-4">
-                        <div className={cn(
-                            "inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-[0.2em] shadow-sm",
-                            isAthlete ? "bg-talent text-white" : "bg-restart text-white"
-                        )}>
-                            <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                            {isAthlete ? 'Můj Náskok' : 'Nabídka Talentů'}
-                        </div>
-                        <h1 className="text-4xl md:text-5xl font-black tracking-tight leading-tight">
-                            {isAthlete ? 'Vítej na vrcholu,' : 'Najděte ty nejlepší,'} <br />
-                            <span className="text-gradient-brand">{firstName}</span>
-                        </h1>
-                        <p className="text-lg text-muted-foreground font-medium max-w-xl">
-                            {isAthlete
-                                ? 'Vaše cesta ze sportu do byznysu nabírá na rychlosti. Máme pro vás nové možnosti.'
-                                : `Aktuálně máte přístup k ${athletes.length} prověřeným sportovcům s vítěznou mentalitou.`}
-                        </p>
-
-                        {!isAthlete && (
-                            <div className="flex flex-wrap items-center gap-4 animate-fade-in stagger-3">
-                                <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500/10 text-green-600 rounded-full border border-green-500/20 shadow-sm">
-                                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                                    <span className="text-[10px] font-black uppercase tracking-widest">Status: Prioritní přístup (AKTIVNÍ)</span>
+    if (isAthlete) {
+        // --- Athlete View (Inspiring, Progress-focused) ---
+        return (
+            <div className="min-h-screen bg-muted/20 pb-20">
+                <div className="container pt-12">
+                    <div className="grid lg:grid-cols-12 gap-8">
+                        {/* Left Column: Identify & Status */}
+                        <div className="lg:col-span-4 space-y-8">
+                            <div className="bg-card rounded-[3rem] p-8 border border-border shadow-sm text-center relative overflow-hidden group">
+                                <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-br from-talent to-talent-dark -z-10" />
+                                <div className="mx-auto w-32 h-32 rounded-[2rem] bg-background p-2 shadow-2xl mb-6 relative">
+                                    <div className="w-full h-full rounded-[1.5rem] bg-muted flex items-center justify-center text-4xl overflow-hidden relative">
+                                        {/* Avatar Placeholder */}
+                                        <span className="font-black text-muted-foreground">{firstName[0]}</span>
+                                        <img src="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&q=80&w=400" className="absolute inset-0 w-full h-full object-cover opacity-80" />
+                                    </div>
+                                    <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-talent text-white rounded-full flex items-center justify-center border-4 border-background">
+                                        <Sparkles className="w-5 h-5" />
+                                    </div>
                                 </div>
-                                <div className="text-xs font-bold text-muted-foreground italic flex items-center gap-1">
-                                    <Sparkles className="w-3 h-3 text-restart" />
-                                    Váš účet je v TOP 5 % nejaktivnějších náborářů
+                                <h1 className="text-3xl font-black tracking-tight mb-2">{firstName}</h1>
+                                <p className="text-muted-foreground font-medium uppercase tracking-widest text-xs mb-8">Future Business Leader</p>
+
+                                <div className="space-y-4 text-left p-6 bg-muted/30 rounded-3xl border border-border/50">
+                                    <div className="flex justify-between items-end mb-2">
+                                        <span className="text-xs font-black uppercase text-muted-foreground">Profile Strength</span>
+                                        <span className="text-xl font-black text-talent">85%</span>
+                                    </div>
+                                    <div className="h-3 w-full bg-background rounded-full overflow-hidden shadow-inner">
+                                        <div className="h-full bg-gradient-to-r from-talent to-talent-dark w-[85%]" />
+                                    </div>
+                                    <p className="text-xs text-muted-foreground font-medium mt-2">You are in the top 10% of candidates!</p>
                                 </div>
                             </div>
-                        )}
-                    </div>
 
-                    <div className="flex items-center gap-4">
-                        <Button variant="outline" size="xl" className="rounded-[1.5rem] gap-2 font-black border-2 bg-background/80 backdrop-blur-md h-16 px-8" asChild>
-                            <Link to={isAthlete ? "/profile/athlete" : "#"}>
-                                <Settings className="w-5 h-5" />
-                                <span className="hidden sm:inline">Správa účtu</span>
-                            </Link>
-                        </Button>
-                        <Button variant={isAthlete ? "talent" : "restart"} size="xl" className="rounded-[1.5rem] gap-2 font-black shadow-2xl h-16 px-8 relative overflow-hidden group">
-                            <span className="relative z-10 flex items-center gap-2">
-                                <Bell className="w-5 h-5" />
-                                Centrála
-                                <span className="bg-white/20 px-2 py-0.5 rounded-full text-[10px] ml-1">2</span>
-                            </span>
-                            <div className="absolute top-0 -left-full w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:left-full transition-all duration-1000" />
-                        </Button>
-                    </div>
-                </div>
-            </div>
-
-            <div className="container">
-                <div className="grid lg:grid-cols-12 gap-12">
-                    {/* Main Content Area */}
-                    <div className="lg:col-span-8 space-y-12">
-
-                        {/* Stats Cards - Redesigned */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {stats.map((stat, i) => (
-                                <div key={i} className="group relative bg-card/60 backdrop-blur-md p-8 rounded-[2.5rem] border border-border/50 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all">
-                                    <div className="absolute top-8 right-8 w-12 h-12 rounded-2xl bg-muted/50 flex items-center justify-center group-hover:bg-talent/10 transition-colors">
-                                        {i === 0 ? <TrendingUp className="w-6 h-6 text-talent" /> : i === 1 ? <User className="w-6 h-6 text-restart" /> : <Award className="w-6 h-6 text-talent" />}
+                            <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-[3rem] p-8 text-white relative overflow-hidden">
+                                <div className="relative z-10 space-y-6">
+                                    <Zap className="w-10 h-10 text-yellow-400 fill-yellow-400" />
+                                    <div>
+                                        <h3 className="text-2xl font-black mb-2">Pro Tip</h3>
+                                        <p className="opacity-80 font-medium leading-relaxed">
+                                            "In business, like in sports, recovery is key. Don't burnout before the interview phase."
+                                        </p>
                                     </div>
-                                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-4">{stat.label}</h4>
-                                    <div className="flex items-baseline gap-2">
-                                        <span className="text-5xl font-black tabular-nums">{stat.value}</span>
-                                        <span className="text-xs font-bold text-talent">+12%</span>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* Dynamic Section */}
-                        {isAthlete ? (
-                            <div className="space-y-8">
-                                <div className="flex items-center justify-between">
-                                    <h2 className="text-3xl font-black">Moje další kroky</h2>
-                                </div>
-                                <div className="grid gap-6">
-                                    {actions.map((action, i) => (
-                                        <Link
-                                            key={i}
-                                            to={action.href || "#"}
-                                            className="group relative flex items-center gap-8 p-8 bg-card/40 backdrop-blur-md border border-border/50 rounded-[3rem] hover:bg-card hover:shadow-2xl hover:border-talent/20 transition-all text-left animate-fade-up overflow-hidden"
-                                            style={{ animationDelay: `${(i + 1) * 0.1}s` }}
-                                        >
-                                            <div className={cn(
-                                                "w-20 h-20 rounded-[1.75rem] flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 shadow-xl",
-                                                action.color
-                                            )}>
-                                                <action.icon className="w-10 h-10" />
-                                            </div>
-                                            <div className="flex-grow space-y-1">
-                                                <h3 className="text-2xl font-black tracking-tight">{action.title}</h3>
-                                                <p className="text-lg text-muted-foreground font-medium leading-relaxed">{action.description}</p>
-                                            </div>
-                                            <div className="w-14 h-14 rounded-full border-2 border-border flex items-center justify-center group-hover:bg-talent group-hover:border-talent group-hover:text-white transition-all">
-                                                <ChevronRight className="w-6 h-6" />
-                                            </div>
-                                            <div className="absolute bottom-0 right-0 w-32 h-32 bg-talent/5 rounded-full blur-3xl -z-10 translate-x-10 translate-y-10 group-hover:scale-150 transition-transform duration-700" />
-                                        </Link>
-                                    ))}
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="space-y-8">
-                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 bg-card/40 backdrop-blur-lg p-10 rounded-[3rem] border border-border/50">
-                                    <div className="space-y-2">
-                                        <h2 className="text-3xl font-black">Adresář talentů</h2>
-                                        <p className="text-muted-foreground font-medium">Filtrujte mezi sportovci podle disciplíny nebo mentality.</p>
-                                    </div>
-                                    <div className="flex flex-col sm:flex-row gap-4 flex-grow max-w-xl">
-                                        <div className="relative flex-grow group">
-                                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-restart transition-colors" />
-                                            <Input
-                                                className="pl-12 rounded-2xl h-16 w-full bg-background border-2 border-border/50 focus:border-restart transition-all text-lg font-medium"
-                                                placeholder="Fotbal, Houževnatost, Praha..."
-                                                value={searchQuery}
-                                                onChange={e => setSearchQuery(e.target.value)}
-                                            />
-                                        </div>
-                                        <Button variant="outline" className="rounded-[1.2rem] h-16 border-2 px-8 font-black hover:border-restart">
-                                            <Filter className="w-5 h-5 mr-3" />
-                                            Parametry
-                                        </Button>
-                                    </div>
-                                </div>
-
-                                {isLoading ? (
-                                    <div className="grid md:grid-cols-2 gap-8 opacity-50">
-                                        {[1, 2, 3, 4].map(i => <div key={i} className="h-64 bg-card rounded-[3rem] animate-pulse shadow-sm" />)}
-                                    </div>
-                                ) : (
-                                    <div className="grid md:grid-cols-2 gap-8">
-                                        {filteredAthletes.map((athlete, i) => (
-                                            <div key={athlete.id} className="group relative bg-card border border-border/50 rounded-[3rem] p-10 space-y-8 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] hover:border-talent/30 transition-all duration-500 animate-fade-up overflow-hidden" style={{ animationDelay: `${i * 0.1}s` }}>
-                                                <div className="absolute top-0 right-0 w-32 h-32 bg-talent/5 rounded-full blur-3xl -z-10 group-hover:bg-talent/10 transition-colors" />
-
-                                                <div className="flex justify-between items-start">
-                                                    <div className="relative">
-                                                        <div className="w-20 h-20 rounded-[1.75rem] bg-gradient-to-br from-talent to-talent-dark flex items-center justify-center text-white font-black text-3xl shadow-xl group-hover:scale-105 transition-transform duration-500">
-                                                            {athlete.first_name?.[0]}{athlete.last_name?.[0]}
-                                                        </div>
-                                                        <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-white border-4 border-card flex items-center justify-center text-xs font-black shadow-lg">
-                                                            <Award className="w-4 h-4 text-talent" />
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex flex-col items-end gap-2">
-                                                        <span className="px-4 py-1.5 bg-muted/80 backdrop-blur-sm rounded-xl text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground border border-border/50">
-                                                            {athlete.sports_career || "Sálový sport"}
-                                                        </span>
-                                                        <span className="text-[10px] font-bold text-muted-foreground opacity-60">AKTIVNÍ DNES</span>
-                                                    </div>
-                                                </div>
-
-                                                <div className="space-y-4">
-                                                    <h3 className="text-2xl font-black tracking-tight group-hover:text-talent transition-colors">
-                                                        {athlete.first_name} {athlete.last_name}
-                                                    </h3>
-                                                    <p className="text-muted-foreground font-medium leading-relaxed line-clamp-3">
-                                                        {athlete.summary || "Tento sportovec je v procesu transformace své kariéry. Kontaktujte nás pro více detailů."}
-                                                    </p>
-                                                </div>
-
-                                                <div className="pt-8 border-t border-border flex items-center justify-between">
-                                                    <div className="flex gap-3">
-                                                        <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:bg-talent/10 hover:text-talent transition-all cursor-pointer">
-                                                            <Mail className="w-5 h-5" />
-                                                        </div>
-                                                        <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:bg-restart/10 hover:text-restart transition-all cursor-pointer">
-                                                            <Smartphone className="w-5 h-5" />
-                                                        </div>
-                                                    </div>
-                                                    <Button variant="ghost" className="font-black text-base p-0 h-auto hover:bg-transparent text-talent group/link flex items-center">
-                                                        Celý profil
-                                                        <ChevronRight className="w-5 h-5 ml-2 group-hover/link:translate-x-2 transition-transform" />
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Sidebar Area - Redesigned */}
-                    <div className="lg:col-span-4 space-y-10 animate-fade-in">
-                        {isAthlete && (
-                            <div className="bg-gradient-to-br from-talent to-talent-dark p-10 rounded-[3.5rem] text-white shadow-2xl shadow-talent/30 relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
-                                    <Sparkles className="w-32 h-32" />
-                                </div>
-                                <div className="relative z-10 space-y-8">
-                                    <div className="space-y-2">
-                                        <h3 className="text-2xl font-black">Cesta šampiona</h3>
-                                        <p className="opacity-80 font-medium">Zůstává jen pár kroků k prvnímu pohovoru.</p>
-                                    </div>
-
-                                    <div className="space-y-4">
-                                        <div className="flex items-end justify-between">
-                                            <span className="text-sm font-black uppercase tracking-widest opacity-80">Úspěšnost profilu</span>
-                                            <span className="text-3xl font-black">70</span>
-                                        </div>
-                                        <div className="h-4 w-full bg-white/20 rounded-full overflow-hidden p-1">
-                                            <div className="h-full bg-white rounded-full shadow-[0_0_20px_rgba(255,255,255,0.8)]" style={{ width: '70%' }} />
-                                        </div>
-                                    </div>
-
-                                    <Button variant="secondary" className="w-full h-16 rounded-2xl font-black group shadow-xl hover:scale-[1.02] transition-all bg-white text-talent" asChild>
-                                        <Link to="/profile/athlete">
-                                            Dokončit výzvu
-                                            <ChevronRight className="ml-2 h-6 w-6 group-hover:translate-x-2 transition-transform" />
-                                        </Link>
+                                    <Button variant="outline" className="w-full rounded-xl border-white/20 text-black hover:bg-white hover:text-black font-bold">
+                                        Read More
                                     </Button>
                                 </div>
                             </div>
-                        )}
+                        </div>
 
-                        {!isAthlete && (
-                            <div className="bg-card border-2 border-restart/20 p-10 rounded-[3rem] space-y-8 shadow-sm">
-                                <div className="flex items-center gap-5">
-                                    <div className="w-14 h-14 rounded-2xl bg-restart/10 text-restart flex items-center justify-center shadow-inner">
-                                        <Award className="w-8 h-8" />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <h4 className="font-black text-xl">Prioritní Matcher</h4>
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-2 h-2 rounded-full bg-green-500" />
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Algoritmus: Maximální</span>
+                        {/* Right Column: Actions & Feed */}
+                        <div className="lg:col-span-8 space-y-12">
+                            <div className="space-y-6">
+                                <h2 className="text-3xl font-black flex items-center gap-3">
+                                    Your Next Steps <ChevronRight className="w-6 h-6 opacity-30" />
+                                </h2>
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    {[
+                                        { title: "Complete CV", desc: "Add your achievements", icon: User, color: "text-blue-500", bg: "bg-blue-500/10", action: () => alert("Navigate to CV editor - Feature coming soon!") },
+                                        { title: "AI Translation", desc: "Convert sports skills", icon: Sparkles, color: "text-purple-500", bg: "bg-purple-500/10", action: () => alert("🤖 AI Career Assistant\n\nYour AI assistant is ready to help you translate your sports achievements into professional skills!\n\nFeatures:\n✨ Automatic skill translation\n🎯 Career path recommendations\n📝 CV optimization\n💼 Interview preparation\n\nClick 'Complete CV' to start using AI assistance!") },
+                                        { title: "Browse Jobs", desc: "3 new matches", icon: Search, color: "text-green-500", bg: "bg-green-500/10", action: () => alert("Job browser - Feature coming soon!") },
+                                        { title: "Mentoring", desc: "Book a session", icon: Users, color: "text-orange-500", bg: "bg-orange-500/10", action: () => alert("Mentoring sessions - Feature coming soon!") },
+                                    ].map((action, i) => (
+                                        <div
+                                            key={i}
+                                            onClick={action.action}
+                                            className="group flex items-center gap-6 p-6 bg-card border border-border/50 rounded-[2rem] hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer"
+                                        >
+                                            <div className={cn("w-16 h-16 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110", action.bg, action.color)}>
+                                                <action.icon className="w-8 h-8" />
+                                            </div>
+                                            <div>
+                                                <h3 className="text-lg font-black">{action.title}</h3>
+                                                <p className="text-muted-foreground text-sm font-medium">{action.desc}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <p className="text-muted-foreground font-medium leading-relaxed text-sm">
-                                    Vaše firma je aktuálně v prioritním seznamu pro oslovení nových talentů. Jakékoliv přerušení aktivity vás posune za vaši konkurenci.
-                                </p>
-                                <Button variant="outline" className="w-full h-14 rounded-2xl border-2 font-black border-restart/30 hover:bg-restart/5 hover:border-restart transition-all shadow-sm">
-                                    Sledovat konkurenci
-                                </Button>
-                            </div>
-                        )}
-
-                        {/* Stories/Blog Section for Athlete */}
-                        {isAthlete && (
-                            <div className="bg-card border border-border rounded-[3rem] p-10 space-y-8 shadow-sm">
-                                <h4 className="text-xl font-black">Inspirace pro vás</h4>
-                                <div className="space-y-6">
-                                    <Link to="/blog/maraton-v-byznysu" className="group block space-y-3">
-                                        <div className="aspect-video rounded-2xl overflow-hidden mb-4">
-                                            <img src="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&q=80&w=400" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                                        </div>
-                                        <h5 className="font-black group-hover:text-talent transition-colors">Jak disciplína mění kariéru</h5>
-                                        <p className="text-xs text-muted-foreground line-clamp-2">Příběh Lukáše, který po 10 letech v atletice...</p>
-                                    </Link>
-                                    <Link to="/blog" className="text-xs font-black text-talent hover:underline flex items-center">
-                                        VŠECHNY PŘÍBĚHY <ChevronRight className="ml-1 w-3 h-3" />
-                                    </Link>
+                                    ))}
                                 </div>
                             </div>
-                        )}
 
-                        {/* Manipulative/Strategic Section for Employers */}
-                        {!isAthlete && (
-                            <div className="bg-card border-2 border-restart/20 p-10 rounded-[3rem] space-y-8 shadow-sm bg-gradient-to-b from-card to-restart/5">
+                            <div className="space-y-6">
                                 <div className="flex items-center justify-between">
-                                    <h4 className="text-xl font-black">Strategické vhledy</h4>
-                                    <div className="px-3 py-1 bg-restart text-white text-[10px] font-black rounded-full animate-pulse">
-                                        EXCLUSIVE
-                                    </div>
+                                    <h2 className="text-2xl font-black">Recommended Reads</h2>
                                 </div>
-                                <div className="space-y-6">
-                                    <Link to="/blog/konkurence-neceka" className="group block space-y-3 p-4 rounded-2xl hover:bg-background transition-colors border border-transparent hover:border-restart/20">
-                                        <div className="aspect-video rounded-xl overflow-hidden mb-2 relative">
-                                            <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=400" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4">
-                                                <span className="text-white text-[10px] font-black uppercase tracking-widest">Analýza trhu</span>
-                                            </div>
+                                <div className="grid gap-4">
+                                    <Link to="/blog/maraton-v-byznysu" className="flex gap-6 p-6 bg-card rounded-[2.5rem] border border-border/50 hover:bg-muted/50 transition-colors group">
+                                        <div className="w-32 h-24 rounded-2xl bg-muted overflow-hidden shrink-0">
+                                            <img src="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=400" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                         </div>
-                                        <h5 className="font-black group-hover:text-restart transition-colors leading-tight">Váš největší konkurent právě prohlíží stejné profily</h5>
-                                        <p className="text-xs text-muted-foreground line-clamp-2 italic">"Zatímco vy váháte, ostatní lídři už vědí, že disciplína sportovce je jejich největší výhoda..."</p>
-                                    </Link>
-
-                                    <div className="h-px bg-border/50" />
-
-                                    <Link to="/blog/proc-vzdat-hledani" className="group block space-y-2">
-                                        <div className="flex items-start gap-4">
-                                            <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0">
-                                                <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80&w=150" className="w-full h-full object-cover" />
-                                            </div>
-                                            <div className="space-y-1">
-                                                <h5 className="text-sm font-black group-hover:text-restart transition-colors leading-snug">Možná byste to měli vzdát a spokojit se s průměrem</h5>
-                                                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter cursor-pointer hover:underline">Psychology of Scarcity →</p>
-                                            </div>
+                                        <div className="py-2">
+                                            <div className="text-[10px] font-black uppercase text-talent tracking-widest mb-2">Most Popular</div>
+                                            <h3 className="text-xl font-black leading-tight mb-2 group-hover:text-talent transition-colors">From Marathon to Management</h3>
+                                            <p className="text-sm text-muted-foreground line-clamp-1">How endurance training prepares you for deep work.</p>
                                         </div>
-                                    </Link>
-
-                                    <Link to="/blog" className="text-xs font-black text-restart hover:underline flex items-center justify-center pt-2 gap-2">
-                                        EXKLUZIVNÍ STRATEGIE PRO PARTNERY <ChevronRight className="w-3 h-3" />
                                     </Link>
                                 </div>
                             </div>
-                        )}
-
-                        {/* Help/Logout Info - Redesigned */}
-                        <div className="bg-card border border-border rounded-[3rem] p-10 space-y-8 shadow-sm">
-                            <div className="space-y-3">
-                                <h4 className="text-xl font-black flex items-center gap-2">
-                                    Potřebujete pomoc?
-                                </h4>
-                                <p className="text-muted-foreground font-medium leading-relaxed">Náš tým mentorů je připraven vám poradit 24/7.</p>
-                            </div>
-                            <Button variant="ghost" className="w-full justify-start gap-4 p-0 h-auto hover:bg-transparent hover:text-talent font-bold group" onClick={signOut}>
-                                <div className="w-16 h-16 rounded-[1.5rem] bg-muted flex items-center justify-center text-muted-foreground group-hover:bg-red-500/10 group-hover:text-red-500 transition-all duration-300">
-                                    <LogOut className="w-7 h-7" />
-                                </div>
-                                <div className="text-left">
-                                    <div className="text-lg font-black group-hover:text-red-500 transition-colors">Odhlásit se</div>
-                                    <div className="text-xs text-muted-foreground font-medium capitalize">Bezpečné ukončení</div>
-                                </div>
-                            </Button>
                         </div>
                     </div>
                 </div>
+            </div>
+        );
+    }
+
+    // --- Employer View (SaaS, Manipulative, Premium) ---
+
+    return (
+        <div className="min-h-screen bg-muted/10">
+            <div className="flex h-screen overflow-hidden">
+                {/* Fixed Sidebar */}
+                <aside className="w-72 bg-card border-r border-border hidden lg:flex flex-col p-6 z-20 shadow-2xl">
+                    <div className="flex items-center gap-2 mb-10 px-2">
+                        <div className="w-8 h-8 bg-gradient-to-br from-restart to-blue-700 rounded-lg flex items-center justify-center text-white font-black text-lg shadow-lg shadow-restart/20">
+                            TR
+                        </div>
+                        <span className="font-black text-xl tracking-tight">Recruiter<span className="text-restart">Pro</span></span>
+                    </div>
+
+                    <div className="space-y-2 flex-grow">
+                        <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground px-4 mb-2 opacity-50">Main Menu</div>
+                        <SidebarItem icon={Briefcase} label="Overview" active={activeTab === 'overview'} onClick={() => setActiveTab('overview')} />
+                        <SidebarItem icon={Target} label="Talent Pipeline" badge="3 New" onClick={() => setActiveTab('pipeline')} />
+                        <SidebarItem icon={Mail} label="Messages" onClick={() => setActiveTab('messages')} />
+                        <SidebarItem icon={Clock} label="History" onClick={() => setActiveTab('history')} />
+
+                        <div className="h-8" />
+                        <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground px-4 mb-2 opacity-50">Market Intelligence</div>
+                        <SidebarItem icon={TrendingUp} label="Competitor Watch" onClick={() => setActiveTab('market')} />
+                        <SidebarItem icon={ShieldAlert} label="Risk Analysis" onClick={() => setActiveTab('risk')} />
+                    </div>
+
+                    {/* Upsell Card in Sidebar */}
+                    <div className="mt-auto bg-gradient-to-br from-gray-900 to-black p-6 rounded-3xl text-white relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 p-4 opacity-20">
+                            <Sparkles className="w-16 h-16 text-yellow-400" />
+                        </div>
+                        <div className="relative z-10 space-y-4">
+                            <div className="text-xs font-black uppercase tracking-widest text-yellow-400">Free Plan Limit</div>
+                            <h4 className="font-bold text-lg leading-tight">You are missing 85% of candidates.</h4>
+                            <div className="w-full bg-white/20 h-2 rounded-full overflow-hidden">
+                                <div className="bg-red-500 w-[15%] h-full" />
+                            </div>
+                            <Button size="sm" className="w-full bg-white text-black hover:bg-white/90 font-black rounded-xl">
+                                Upgrade Now
+                            </Button>
+                        </div>
+                    </div>
+                </aside>
+
+                {/* Main Content Scroll Area */}
+                <main className="flex-1 overflow-y-auto bg-muted/10 relative">
+                    {/* Top Header */}
+                    <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-xl border-b border-border px-8 py-4 flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <h2 className="text-xl font-black text-foreground">Dashboard</h2>
+                            <span className="px-3 py-1 rounded-full bg-red-500/10 text-red-500 text-xs font-black uppercase tracking-wider border border-red-500/20 animate-pulse">
+                                Market High Demand
+                            </span>
+                        </div>
+                        <div className="flex items-center gap-6">
+                            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                                <Clock className="w-4 h-4" />
+                                <span>Session: 14m</span>
+                            </div>
+                            <div className="h-8 w-px bg-border" />
+                            <div className="flex items-center gap-3">
+                                <div className="text-right hidden md:block">
+                                    <div className="text-sm font-black">{firstName}</div>
+                                    <div className="text-[10px] text-muted-foreground uppercase tracking-widest">Free Account</div>
+                                </div>
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-restart to-blue-600 flex items-center justify-center text-white font-bold shadow-lg cursor-pointer hover:scale-105 transition-transform">
+                                    {firstName[0]}
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div className="p-8 max-w-7xl mx-auto space-y-12">
+                        {/* Stats Row */}
+                        <div className="grid md:grid-cols-3 gap-6">
+                            <div className="bg-card p-6 rounded-[2rem] border border-border shadow-sm flex flex-col justify-between h-40 relative overflow-hidden">
+                                <div className="absolute -right-4 -top-4 w-24 h-24 bg-restart/10 rounded-full blur-2xl" />
+                                <div className="flex justify-between items-start z-10">
+                                    <div className="p-3 rounded-2xl bg-restart/10 text-restart"><User className="w-6 h-6" /></div>
+                                    <span className="text-green-500 text-xs font-black bg-green-500/10 px-2 py-1 rounded-full">+12 today</span>
+                                </div>
+                                <div className="z-10">
+                                    <div className="text-4xl font-black text-foreground">{athletes.length}</div>
+                                    <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest mt-1">Available Athletes</div>
+                                </div>
+                            </div>
+
+                            <div className="bg-card p-6 rounded-[2rem] border border-border shadow-sm flex flex-col justify-between h-40 relative overflow-hidden border-l-4 border-l-red-500">
+                                <div className="absolute -right-4 -top-4 w-24 h-24 bg-red-500/10 rounded-full blur-2xl" />
+                                <div className="flex justify-between items-start z-10">
+                                    <div className="p-3 rounded-2xl bg-red-500/10 text-red-500"><Eye className="w-6 h-6" /></div>
+                                </div>
+                                <div className="z-10">
+                                    <div className="text-4xl font-black text-foreground">14</div>
+                                    <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest mt-1">Missed Opportunities</div>
+                                </div>
+                                <p className="text-[10px] text-red-500 font-medium absolute bottom-6 right-6 max-w-[100px] text-right leading-tight">
+                                    Competitors are faster.
+                                </p>
+                            </div>
+
+                            <div className="bg-card p-6 rounded-[2rem] border border-border shadow-sm flex flex-col justify-between h-40 relative overflow-hidden bg-gradient-to-br from-card to-muted">
+                                <div className="z-10 flex flex-col items-center justify-center h-full text-center space-y-3">
+                                    <Lock className="w-8 h-8 text-muted-foreground" />
+                                    <div className="text-sm font-black text-muted-foreground uppercase tracking-widest">Premium Analytics</div>
+                                    <Button variant="outline" size="sm" className="h-8 text-xs font-bold rounded-full">Unlock Data</Button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="grid lg:grid-cols-3 gap-8">
+                            <div className="lg:col-span-2 space-y-8">
+                                <div className="flex items-center justify-between">
+                                    <h3 className="text-2xl font-black tracking-tight">Top Recommendations</h3>
+                                    <Button variant="ghost" className="text-restart font-bold">View All</Button>
+                                </div>
+
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    {isLoading ? (
+                                        [1, 2].map(i => <div key={i} className="h-64 bg-card rounded-[2.5rem] animate-pulse" />)
+                                    ) : (
+                                        <>
+                                            {athletes.slice(0, 2).map((athlete) => (
+                                                <div key={athlete.id} className="bg-card p-8 rounded-[2.5rem] border border-border shadow-sm hover:shadow-xl transition-all group relative">
+                                                    <div className="flex justify-between items-start mb-6">
+                                                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-restart to-blue-600 flex items-center justify-center text-white font-black text-2xl shadow-lg">
+                                                            {athlete.first_name[0]}{athlete.last_name[0]}
+                                                        </div>
+                                                        <span className="px-3 py-1 rounded-lg bg-muted text-xs font-black uppercase tracking-widest text-muted-foreground">
+                                                            {athlete.sports_career || "Athlete"}
+                                                        </span>
+                                                    </div>
+                                                    <h4 className="text-xl font-black mb-2">{athlete.first_name} {athlete.last_name}</h4>
+                                                    <p className="text-sm text-muted-foreground font-medium line-clamp-2 mb-6">
+                                                        {athlete.summary || "High potential candidate with proven track record of discipline."}
+                                                    </p>
+                                                    <div className="flex gap-2">
+                                                        <Button variant="outline" className="flex-1 rounded-xl font-bold border-2 hover:bg-restart hover:text-white hover:border-restart transition-colors">
+                                                            Profile
+                                                        </Button>
+                                                        <Button variant="secondary" className="rounded-xl px-3">
+                                                            <Mail className="w-4 h-4" />
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                            {/* Locked items */}
+                                            <LockedCandidateCard />
+                                            <LockedCandidateCard />
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="space-y-8">
+                                <MarketPulseWidget />
+
+                                <div className="bg-gradient-to-b from-card to-background border border-border rounded-[2.5rem] p-8 text-center space-y-6 shadow-xl relative overflow-hidden">
+                                    <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-red-500 to-transparent" />
+                                    <ShieldAlert className="w-12 h-12 text-red-500 mx-auto" />
+                                    <div>
+                                        <h4 className="text-xl font-black">Recruitment Risk: HIGH</h4>
+                                        <p className="text-muted-foreground font-medium text-sm mt-2 leading-relaxed">
+                                            Your current "Passive" strategy has a 80% failure rate in this market.
+                                        </p>
+                                    </div>
+                                    <div className="bg-red-500/10 rounded-xl p-4 text-left">
+                                        <div className="flex justify-between text-xs font-black uppercase text-red-500 mb-2">
+                                            <span>Market Speed</span>
+                                            <span>Critical</span>
+                                        </div>
+                                        <div className="w-full bg-red-200 h-1.5 rounded-full overflow-hidden">
+                                            <div className="bg-red-500 w-[92%] h-full animate-pulse" />
+                                        </div>
+                                    </div>
+                                    <Button className="w-full bg-red-500 hover:bg-red-600 text-white font-black rounded-xl shadow-lg shadow-red-500/20 py-6 text-lg">
+                                        Switch to Aggressive
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
             </div>
         </div>
     );
 };
-
-const ArrowRight: React.FC<{ className?: string }> = ({ className }) => (
-    <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className={className}
-    >
-        <path d="M5 12h14"></path>
-        <path d="m12 5 7 7-7 7"></path>
-    </svg>
-);
 
 export default Dashboard;

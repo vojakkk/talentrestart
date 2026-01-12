@@ -55,9 +55,11 @@ export const Footer: React.FC = () => {
                 <li>
                   <Link to="/contact" className="text-muted-foreground hover:text-talent font-medium transition-colors">Kariérní poradenství</Link>
                 </li>
-                <li>
-                  <Link to="/blog" className="text-muted-foreground hover:text-talent font-medium transition-colors">Příběhy sportovců</Link>
-                </li>
+                {user && (
+                  <li>
+                    <Link to="/blog" className="text-muted-foreground hover:text-talent font-medium transition-colors">Příběhy sportovců</Link>
+                  </li>
+                )}
               </ul>
             </div>
           )}
@@ -108,11 +110,7 @@ export const Footer: React.FC = () => {
             © {currentYear} Talent Restart. Všechna práva vyhrazena.
           </div>
 
-          <div className="flex gap-8 text-xs font-black uppercase tracking-widest text-muted-foreground/60">
-            <Link to="#" className="hover:text-talent transition-colors">Ochrana soukromí</Link>
-            <Link to="#" className="hover:text-talent transition-colors">Obchodní podmínky</Link>
-            <Link to="#" className="hover:text-talent transition-colors">Cookies</Link>
-          </div>
+          <Link to="#" className="hover:text-talent transition-colors">Cookies</Link>
         </div>
       </div>
     </footer>

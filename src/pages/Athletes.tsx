@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Award, Target, Users, TrendingUp, CheckCircle, Sparkles, Rocket } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import heroAthlete from '@/assets/hero-athlete-clean.png';
 
 const Athletes: React.FC = () => {
   const { t, language } = useLanguage();
+  const { user } = useAuth();
 
   const benefits = [
     {
@@ -153,22 +155,135 @@ const Athletes: React.FC = () => {
         </div>
       </section>
 
+      {/* AI Assistant Section */}
+      <section className="py-24 bg-card border-y border-border/50 relative overflow-hidden">
+        <div className="absolute inset-0 bg-talent/5 opacity-50" />
+        <div className="container relative z-10">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div className="order-2 lg:order-1 relative">
+              <div className="relative z-10 bg-background rounded-3xl p-8 border border-border shadow-2xl animate-fade-in">
+                {/* Visual "Transformation" Card */}
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">Vstup (Sportovní kariéra)</p>
+                    <div className="p-4 bg-muted/40 rounded-xl font-medium text-muted-foreground border-l-4 border-gray-400">
+                      "10 let fotbalu. Kapitán U19. Zranění kolene, konec kariéry. Trénoval jsem 6x týdně."
+                    </div>
+                  </div>
+
+                  <div className="flex justify-center">
+                    <div className="bg-talent/10 p-2 rounded-full text-talent animate-pulse">
+                      <Sparkles className="w-6 h-6" />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="text-xs font-black uppercase tracking-widest text-talent">AI Výstup (Profesní profil)</p>
+                    <div className="p-4 bg-talent/5 rounded-xl border-l-4 border-talent space-y-3">
+                      <div>
+                        <span className="font-bold text-foreground">Prokázaný Leadership:</span>
+                        <span className="text-muted-foreground text-sm ml-2">Vedení týmu v krizových situacích, zodpovědnost za výsledky kolektivu (Kapitán U19).</span>
+                      </div>
+                      <div>
+                        <span className="font-bold text-foreground">Odolnost & Adaptabilita:</span>
+                        <span className="text-muted-foreground text-sm ml-2">Schopnost rychle se adaptovat na změnu životních podmínek (Kariérní pivot).</span>
+                      </div>
+                      <div>
+                        <span className="font-bold text-foreground">Extrémní disciplína:</span>
+                        <span className="text-muted-foreground text-sm ml-2">Konzistentní výkonnost a time-management (6x týdně trénink).</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Decorative elements */}
+              <div className="absolute top-10 -left-10 w-24 h-24 bg-talent rounded-full blur-2xl opacity-20 -z-10" />
+              <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-restart rounded-full blur-2xl opacity-20 -z-10" />
+            </div>
+
+            <div className="order-1 lg:order-2 space-y-8">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-talent/10 text-talent text-sm font-bold uppercase tracking-widest mb-2">
+                <Sparkles className="w-4 h-4" />
+                AI Career Assistant
+              </div>
+              <h2 className="text-display-sm font-black leading-tight">
+                {language === 'cs' ? 'Vaše medaile neumíme vystavit.' : 'We can\'t display your medals.'} <br />
+                <span className="text-gradient-brand">
+                  {language === 'cs' ? 'Ale umíme je přeložit.' : 'But we can translate them.'}
+                </span>
+              </h2>
+              <p className="text-xl text-muted-foreground font-medium leading-relaxed">
+                {language === 'cs'
+                  ? 'Náš pokročilý AI algoritmus analyzuje vaši sportovní historii a automaticky ji transformuje do jazyka, kterému rozumí HR manažeři a CEO.'
+                  : 'Our advanced AI algorithm analyzes your sports history and automatically transforms it into a language that HR managers and CEOs understand.'}
+              </p>
+              <ul className="space-y-4">
+                {[
+                  language === 'cs' ? 'Okamžitý překlad "sportovštiny" do "byznysu"' : 'Instant translation from "sports-speak" to "business"',
+                  language === 'cs' ? 'Identifikace přenositelných dovedností (Soft Skills)' : 'Identification of transferable skills (Soft Skills)',
+                  language === 'cs' ? 'Návrh ideálních pracovních pozic na základě psychologického profilu' : 'Ideal job suggestions based on psychological profile'
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 font-bold text-foreground">
+                    <CheckCircle className="w-5 h-5 text-talent flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Button variant="outline" size="lg" className="rounded-xl border-2 px-8 font-bold mt-4">
+                {language === 'cs' ? 'Vyzkoušet AI asistenta (Beta)' : 'Try AI Assistant (Beta)'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Final CTA */}
       <section className="py-24 md:py-40">
         <div className="container text-center">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-display-sm md:text-display-lg font-black mb-8 leading-tight">
-              {language === 'cs' ? 'Začněte svou novou etapu ještě dnes' : 'Start your new chapter today'}
-            </h2>
-            <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
-              Registrace trvá méně než 2 minuty. Připojte se k exkluzivní síti sportovců a elitních zaměstnavatelů.
-            </p>
-            <Button variant="talent" size="xl" className="h-16 px-12 rounded-2xl text-lg font-black shadow-xl" asChild>
-              <Link to="/signup?role=athlete">
-                Vytvořit si profil zdarma
-                <ArrowRight className="ml-2 h-6 w-6" />
-              </Link>
-            </Button>
+            {user ? (
+              // Logged-in user CTA
+              <>
+                <h2 className="text-display-sm md:text-display-lg font-black mb-8 leading-tight">
+                  {language === 'cs' ? 'Připraveni na další krok?' : 'Ready for the next step?'}
+                </h2>
+                <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
+                  {language === 'cs'
+                    ? 'Využijte AI asistenta k vylepšení vašeho profilu a najděte příležitosti šité na míru vašim dovednostem.'
+                    : 'Use the AI assistant to enhance your profile and find opportunities tailored to your skills.'}
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button variant="talent" size="xl" className="h-16 px-12 rounded-2xl text-lg font-black shadow-xl" asChild>
+                    <Link to="/dashboard">
+                      {language === 'cs' ? 'Můj Dashboard' : 'My Dashboard'}
+                      <ArrowRight className="ml-2 h-6 w-6" />
+                    </Link>
+                  </Button>
+                  <Button variant="outline" size="xl" className="h-16 px-12 rounded-2xl text-lg font-black border-2" asChild>
+                    <Link to="/blog">
+                      {language === 'cs' ? 'Příběhy Úspěchu' : 'Success Stories'}
+                    </Link>
+                  </Button>
+                </div>
+              </>
+            ) : (
+              // Non-logged-in user CTA
+              <>
+                <h2 className="text-display-sm md:text-display-lg font-black mb-8 leading-tight">
+                  {language === 'cs' ? 'Začněte svou novou etapu ještě dnes' : 'Start your new chapter today'}
+                </h2>
+                <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
+                  Registrace trvá méně než 2 minuty. Připojte se k exkluzivní síti sportovců a elitních zaměstnavatelů.
+                </p>
+                <Button variant="talent" size="xl" className="h-16 px-12 rounded-2xl text-lg font-black shadow-xl" asChild>
+                  <Link to="/signup?role=athlete">
+                    Vytvořit si profil zdarma
+                    <ArrowRight className="ml-2 h-6 w-6" />
+                  </Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </section>

@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Users, Briefcase, Sparkles, ChevronRight } from 'lucide-react';
+import { ArrowRight, Users, Briefcase, Sparkles, ChevronRight, TrendingUp, Target, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import heroAthlete from '@/assets/hero-athlete-clean.png';
+import athleteDashboardHero from '@/assets/athlete-dashboard-hero.png';
+import employerDashboardHero from '@/assets/employer-dashboard-hero.png';
 import tomasEliska from '@/assets/tomas-eliska.png';
 
 const HeroSection: React.FC = () => {
@@ -13,14 +15,21 @@ const HeroSection: React.FC = () => {
   const { user } = useAuth();
 
   const role = user?.user_metadata?.role || user?.user_metadata?.user_role || user?.user_metadata?.account_type;
+  const firstName = user?.user_metadata?.first_name || 'User';
+  const isAthlete = role === 'athlete';
+
+  // Determine which hero image to use
+  const heroImage = user
+    ? (isAthlete ? athleteDashboardHero : employerDashboardHero)
+    : heroAthlete;
 
   return (
     <section className="relative min-h-[90vh] flex items-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
-          src={heroAthlete}
-          alt="Professional Athlete"
+          src={heroImage}
+          alt={user ? (isAthlete ? "Career Development" : "Talent Recruitment") : "Professional Athlete"}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/40 to-transparent" />
@@ -30,25 +39,99 @@ const HeroSection: React.FC = () => {
       {/* Content */}
       <div className="container relative z-10 py-20">
         <div className="max-w-2xl">
-          <h1 className="text-display-sm md:text-display-lg font-black mb-6 animate-fade-up">
-            <span className="block">{t('hero.headline')}</span>
-            <span className="block text-gradient-brand">{t('hero.headline2')}</span>
-          </h1>
+          {user ? (
+            // Logged-in user content
+            <>
+              <div className={cn(
+                "inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest mb-6",
+                isAthlete ? "bg-talent/90 text-white" : "bg-restart/90 text-white"
+              )}>
+                {isAthlete ? <Award className="w-4 h-4" /> : <TrendingUp className="w-4 h-4" />}
+                {isAthlete ? 'Vaše kariérní cesta' : 'Talent Dashboard'}
+              </div>
 
-          <p className="text-lg md:text-xl text-muted-foreground mb-8 animate-fade-up stagger-1 opacity-0">
-            {t('hero.subheadline')}
-          </p>
+              <h1 className="text-display-sm md:text-display-lg font-black mb-6 animate-fade-up">
+                {isAthlete ? (
+                  <>
+                    <span className="block">Vítejte zpět, {firstName}!</span>
+                    <span className="block text-gradient-brand">Vaše příští výzva čeká</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="block">Vítejte, {firstName}</span>
+                    <span className="block text-gradient-brand">Objevte další talenty</span>
+                  </>
+                )}
+              </h1>
 
-          <div className="flex flex-col sm:flex-row gap-4 animate-fade-up stagger-2 opacity-0">
-            {user ? (
-              <Button variant="hero-primary" size="xl" asChild>
-                <Link to="/dashboard">
-                  Přejít na Dashboard
-                  <ArrowRight className="h-5 w-5" />
-                </Link>
-              </Button>
-            ) : (
-              <>
+              <p className="text-lg md:text-xl text-muted-foreground mb-8 animate-fade-up stagger-1 opacity-0">
+                {isAthlete
+                  ? 'Pokračujte ve své kariérní transformaci s podporou AI asistenta a personalizovaných doporučení.'
+                  : 'Přístup k exkluzivní databázi talentovaných sportovců připravených na novou výzvu v byznysu.'}
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 animate-fade-up stagger-2 opacity-0">
+                <Button variant="hero-primary" size="xl" asChild>
+                  <Link to="/dashboard">
+                    {isAthlete ? 'Můj Profil & Příležitosti' : 'Prohlížet Kandidáty'}
+                    <ArrowRight className="h-5 w-5" />
+                  </Link>
+                </Button>
+                <Button variant="hero-secondary" size="xl" asChild>
+                  <Link to={isAthlete ? "/athletes" : "/blog"}>
+                    {isAthlete ? 'Kariérní Tipy' : 'Příběhy Úspěchu'}
+                  </Link>
+                </Button>
+              </div>
+
+              {/* Quick Stats for logged-in users */}
+              <div className="grid grid-cols-3 gap-4 mt-12 animate-fade-up stagger-3 opacity-0">
+                {isAthlete ? (
+                  <>
+                    <div className="bg-background/60 backdrop-blur-sm rounded-2xl p-4 border border-border/50">
+                      <div className="text-2xl font-black text-talent">85%</div>
+                      <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Profil síla</div>
+                    </div>
+                    <div className="bg-background/60 backdrop-blur-sm rounded-2xl p-4 border border-border/50">
+                      <div className="text-2xl font-black text-foreground">3</div>
+                      <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Nové shody</div>
+                    </div>
+                    <div className="bg-background/60 backdrop-blur-sm rounded-2xl p-4 border border-border/50">
+                      <div className="text-2xl font-black text-foreground">12</div>
+                      <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Zobrazení</div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="bg-background/60 backdrop-blur-sm rounded-2xl p-4 border border-border/50">
+                      <div className="text-2xl font-black text-restart">1,500+</div>
+                      <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Talenti</div>
+                    </div>
+                    <div className="bg-background/60 backdrop-blur-sm rounded-2xl p-4 border border-border/50">
+                      <div className="text-2xl font-black text-foreground">94%</div>
+                      <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Úspěšnost</div>
+                    </div>
+                    <div className="bg-background/60 backdrop-blur-sm rounded-2xl p-4 border border-border/50">
+                      <div className="text-2xl font-black text-foreground">+12</div>
+                      <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Dnes</div>
+                    </div>
+                  </>
+                )}
+              </div>
+            </>
+          ) : (
+            // Non-logged-in user content (original)
+            <>
+              <h1 className="text-display-sm md:text-display-lg font-black mb-6 animate-fade-up">
+                <span className="block">{t('hero.headline')}</span>
+                <span className="block text-gradient-brand">{t('hero.headline2')}</span>
+              </h1>
+
+              <p className="text-lg md:text-xl text-muted-foreground mb-8 animate-fade-up stagger-1 opacity-0">
+                {t('hero.subheadline')}
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 animate-fade-up stagger-2 opacity-0">
                 <Button variant="hero-primary" size="xl" asChild>
                   <Link to="/signup?role=athlete">
                     {t('hero.cta.athlete')}
@@ -60,9 +143,9 @@ const HeroSection: React.FC = () => {
                     {t('hero.cta.employer')}
                   </Link>
                 </Button>
-              </>
-            )}
-          </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </section>
@@ -228,6 +311,9 @@ const FeaturesSection: React.FC = () => {
 
 const BlogPreviewSection: React.FC = () => {
   const { language } = useLanguage();
+  const { user } = useAuth();
+
+  if (!user) return null;
 
   const previews = [
     {
