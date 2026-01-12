@@ -44,16 +44,46 @@ const AthleteProfile: React.FC = () => {
     });
 
     useEffect(() => {
-        if (user) {
-            setProfileData({
-                firstName: user.user_metadata?.first_name || '',
-                lastName: user.user_metadata?.last_name || '',
-                summary: user.user_metadata?.summary || '',
-                sportsCareer: user.user_metadata?.sports_career || '',
-                achievements: user.user_metadata?.achievements || '',
-                skills: user.user_metadata?.skills || ''
-            });
-        }
+        const fetchProfile = async () => {
+            if (!user) return;
+
+            setIsLoading(true);
+            try {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', user.id)
+                    .single();
+
+                if (error) throw error;
+
+                if (data) {
+                    setProfileData({
+                        firstName: data.first_name || user.user_metadata?.first_name || '',
+                        lastName: data.last_name || user.user_metadata?.last_name || '',
+                        summary: data.summary || '',
+                        sportsCareer: data.sports_career || '',
+                        achievements: data.achievements || '',
+                        skills: data.skills || ''
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+                // Fallback to metadata
+                setProfileData({
+                    firstName: user.user_metadata?.first_name || '',
+                    lastName: user.user_metadata?.last_name || '',
+                    summary: user.user_metadata?.summary || '',
+                    sportsCareer: user.user_metadata?.sports_career || '',
+                    achievements: user.user_metadata?.achievements || '',
+                    skills: user.user_metadata?.skills || ''
+                });
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchProfile();
     }, [user]);
 
     const handleSave = async (e: React.FormEvent) => {

@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
 
+import { useAuth } from '@/contexts/AuthContext';
+
 interface BlogPost {
     id: string;
     title: string;
@@ -14,12 +16,43 @@ interface BlogPost {
     author: string;
     category: string;
     readTime: string;
+    role?: 'athlete' | 'employer';
 }
 
 const Blog: React.FC = () => {
     const { t, language } = useLanguage();
+    const { user } = useAuth();
 
-    const posts: BlogPost[] = [
+    const role = user?.user_metadata?.role || user?.user_metadata?.user_role || user?.user_metadata?.account_type || 'athlete';
+    const isAthlete = role === 'athlete';
+
+    const allPosts: BlogPost[] = [
+        {
+            id: 'konkurence-neceka',
+            title: language === 'cs' ? 'Váš největší konkurent právě prohlíží stejné profily' : 'Your Biggest Competitor Is Browsing the Same Profiles',
+            excerpt: language === 'cs'
+                ? 'Zatímco vy váháte, ostatní lídři už vědí, že disciplína sportovce je jejich největší konkurenční výhodou. Nečekejte.'
+                : 'While you hesitate, other leaders already know that an athlete’s discipline is their biggest competitive advantage.',
+            image: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=1000',
+            date: '14. 1. 2026',
+            author: 'Strategický Tým',
+            category: language === 'cs' ? 'Strategie' : 'Strategy',
+            readTime: '4 min',
+            role: 'employer',
+        },
+        {
+            id: 'proc-vzdat-hledani',
+            title: language === 'cs' ? 'Proč byste to měli vzdát a spokojit se s průměrem' : 'Why You Should Give Up and Settle for Mediocrity',
+            excerpt: language === 'cs'
+                ? 'Najít špičkového talenta vyžaduje vizi. Pokud hledáte jen rychlou náplast, možná zde nejste správně.'
+                : 'Finding top talent requires vision. If you’re just looking for a quick fix, you might not be in the right place.',
+            image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80&w=1000',
+            date: '13. 1. 2026',
+            author: 'Psychologie Úspěchu',
+            category: language === 'cs' ? 'Analýza' : 'Analysis',
+            readTime: '7 min',
+            role: 'employer',
+        },
         {
             id: 'maraton-v-byznysu',
             title: language === 'cs' ? 'Z maratonu do byznysu: Jak disciplína mění kariéru' : 'From Marathon to Business: How Discipline Changes Careers',
@@ -67,8 +100,56 @@ const Blog: React.FC = () => {
             author: 'Talent Restart Team',
             category: language === 'cs' ? 'Analýza' : 'Analysis',
             readTime: '10 min',
+        },
+        {
+            id: 'od-bazenu-k-boardu',
+            title: language === 'cs' ? 'Od bazénu k boardu: Jak vytrvalost tvoří lídry' : 'From Pool to Boardroom: How Persistence Builds Leaders',
+            excerpt: language === 'cs'
+                ? 'Příběh plavkyně Aleny, která vyměnila ranní tréninky za vedení mezinárodních týmů.'
+                : 'The story of swimmer Alena, who swapped early morning practices for leading international teams.',
+            image: 'https://images.unsplash.com/photo-1530549387079-7ee0df123479?auto=format&fit=crop&q=80&w=1000',
+            date: '28. 12. 2025',
+            author: 'Martin Svoboda',
+            category: language === 'cs' ? 'Leadership' : 'Leadership',
+            readTime: '7 min',
+        },
+        {
+            id: 'tenisova-strategie',
+            title: language === 'cs' ? 'Tenisová strategie v moderním marketingu' : 'Tennis Strategy in Modern Marketing',
+            excerpt: language === 'cs'
+                ? 'Jak čtení soupeře na kurtu pomáhá Tomášovi předvídat tržní trendy.'
+                : 'How reading an opponent on the court helps Tomas predict market trends.',
+            image: 'https://images.unsplash.com/photo-1595435066921-9549d494888a?auto=format&fit=crop&q=80&w=1000',
+            date: '20. 12. 2025',
+            author: 'Petra Černá',
+            category: language === 'cs' ? 'Marketing' : 'Marketing',
+            readTime: '5 min',
+        },
+        {
+            id: 'kodovani-za-oponou',
+            title: language === 'cs' ? 'Kódování za oponou: Disciplína moderní gymnastky' : 'Coding Behind the Curtain: The Discipline of a Rhythmic Gymnast',
+            excerpt: language === 'cs'
+                ? 'Eliška našla v programování stejnou preciznost a eleganci jako ve svých sestavách.'
+                : 'Eliska found the same precision and elegance in programming as in her routines.',
+            image: 'https://images.unsplash.com/photo-1547432020-f576e2cacc6d?auto=format&fit=crop&q=80&w=1000',
+            date: '15. 12. 2025',
+            author: 'Jan Malý',
+            category: language === 'cs' ? 'Technologie' : 'Technology',
+            readTime: '8 min',
         }
     ];
+
+    // Filter posts: employers see employer posts first, athletes don't see employer posts
+    const posts = allPosts.filter(post => {
+        if (isAthlete && post.role === 'employer') return false;
+        return true;
+    }).sort((a, b) => {
+        if (!isAthlete) {
+            if (a.role === 'employer' && b.role !== 'employer') return -1;
+            if (a.role !== 'employer' && b.role === 'employer') return 1;
+        }
+        return 0;
+    });
 
     return (
         <div className="bg-background min-h-screen pb-32">
@@ -143,9 +224,10 @@ const Blog: React.FC = () => {
             <section className="container">
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {posts.slice(1).map((post, i) => (
-                        <div
+                        <Link
                             key={post.id}
-                            className="group bg-card border border-border rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 animate-fade-up"
+                            to={`/blog/${post.id}`}
+                            className="group bg-card border border-border rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 animate-fade-up flex flex-col"
                             style={{ animationDelay: `${i * 0.1}s` }}
                         >
                             <div className="relative h-60 overflow-hidden">
@@ -160,7 +242,7 @@ const Blog: React.FC = () => {
                                     </span>
                                 </div>
                             </div>
-                            <div className="p-8 space-y-4">
+                            <div className="p-8 space-y-4 flex-grow">
                                 <div className="flex items-center gap-4 text-[10px] uppercase font-black tracking-widest text-muted-foreground">
                                     <span>{post.date}</span>
                                     <span className="w-1 h-1 bg-border rounded-full" />
@@ -172,14 +254,14 @@ const Blog: React.FC = () => {
                                 <p className="text-muted-foreground font-medium line-clamp-3 text-sm leading-relaxed">
                                     {post.excerpt}
                                 </p>
-                                <div className="pt-4">
-                                    <Link to={`/blog/${post.id}`} className="inline-flex items-center text-sm font-black text-talent group/link">
-                                        Celý příběh
-                                        <ArrowRight className="ml-2 w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
-                                    </Link>
+                            </div>
+                            <div className="px-8 pb-8 pt-0">
+                                <div className="inline-flex items-center text-sm font-black text-talent group/link">
+                                    Celý příběh
+                                    <ArrowRight className="ml-2 w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
 

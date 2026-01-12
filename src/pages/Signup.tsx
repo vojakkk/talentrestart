@@ -73,6 +73,10 @@ const Signup: React.FC = () => {
               role: role,
               user_role: role,
               account_type: role,
+              summary: '',
+              sports_career: '',
+              achievements: '',
+              skills: ''
             },
           ]);
 

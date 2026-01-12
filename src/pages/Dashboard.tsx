@@ -110,211 +110,347 @@ const Dashboard: React.FC = () => {
         ];
 
     return (
-        <div className="min-h-screen bg-muted/20 pb-20">
-            {/* Dashboard Header */}
-            <div className="bg-background border-b border-border mb-8 animate-fade-in shadow-sm">
-                <div className="container py-12">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                        <div className="space-y-2">
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-talent/10 text-talent text-xs font-black uppercase tracking-widest mb-2">
-                                {isAthlete ? 'Můj Sportovní Profil' : 'HR Dashboard'}
-                            </div>
-                            <h1 className="text-4xl font-black">Ahoj, {firstName}! 🚀</h1>
-                            <p className="text-muted-foreground font-medium">Vítej zpět. {isAthlete ? 'Dnes máš 2 nová upozornění.' : `Dnes máme ${athletes.length} registrovaných sportovců.`}</p>
-                        </div>
+        <div className="min-h-screen bg-muted/20 pb-20 overflow-hidden">
+            {/* Role-Specific Hero Background */}
+            <div className="relative">
+                <div className={cn(
+                    "absolute top-0 left-0 w-full h-[300px] -z-10",
+                    isAthlete
+                        ? "bg-gradient-to-br from-talent/20 via-background to-restart/10"
+                        : "bg-gradient-to-br from-restart/20 via-background to-talent/10"
+                )} />
+                <div className="absolute top-0 right-0 w-full h-[300px] -z-10 opacity-30">
+                    <img
+                        src={isAthlete
+                            ? "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&q=80&w=1500"
+                            : "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=1500"
+                        }
+                        className="w-full h-full object-cover mask-gradient-to-b"
+                    />
+                </div>
+            </div>
 
-                        <div className="flex items-center gap-3">
-                            <Button variant="outline" size="lg" className="rounded-2xl gap-2 font-bold border-2" asChild>
-                                <Link to={isAthlete ? "/profile/athlete" : "#"}>
-                                    <Settings className="w-5 h-5" />
-                                    <span className="hidden sm:inline">Nastavení</span>
-                                </Link>
-                            </Button>
-                            <Button variant="talent" size="lg" className="rounded-2xl gap-2 font-bold shadow-lg shadow-talent/20">
-                                <Bell className="w-5 h-5" />
-                                <span className="relative">
-                                    Upozornění
-                                    <span className="absolute -top-3 -right-3 w-5 h-5 bg-restart rounded-full flex items-center justify-center text-[10px] text-white border-2 border-background font-black">2</span>
-                                </span>
-                            </Button>
+            {/* Dashboard Header */}
+            <div className="container pt-12 mb-12">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+                    <div className="space-y-4">
+                        <div className={cn(
+                            "inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-[0.2em] shadow-sm",
+                            isAthlete ? "bg-talent text-white" : "bg-restart text-white"
+                        )}>
+                            <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                            {isAthlete ? 'Můj Náskok' : 'Nabídka Talentů'}
                         </div>
+                        <h1 className="text-4xl md:text-5xl font-black tracking-tight leading-tight">
+                            {isAthlete ? 'Vítej na vrcholu,' : 'Najděte ty nejlepší,'} <br />
+                            <span className="text-gradient-brand">{firstName}</span>
+                        </h1>
+                        <p className="text-lg text-muted-foreground font-medium max-w-xl">
+                            {isAthlete
+                                ? 'Vaše cesta ze sportu do byznysu nabírá na rychlosti. Máme pro vás nové možnosti.'
+                                : `Aktuálně máte přístup k ${athletes.length} prověřeným sportovcům s vítěznou mentalitou.`}
+                        </p>
+
+                        {!isAthlete && (
+                            <div className="flex flex-wrap items-center gap-4 animate-fade-in stagger-3">
+                                <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500/10 text-green-600 rounded-full border border-green-500/20 shadow-sm">
+                                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                                    <span className="text-[10px] font-black uppercase tracking-widest">Status: Prioritní přístup (AKTIVNÍ)</span>
+                                </div>
+                                <div className="text-xs font-bold text-muted-foreground italic flex items-center gap-1">
+                                    <Sparkles className="w-3 h-3 text-restart" />
+                                    Váš účet je v TOP 5 % nejaktivnějších náborářů
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                        <Button variant="outline" size="xl" className="rounded-[1.5rem] gap-2 font-black border-2 bg-background/80 backdrop-blur-md h-16 px-8" asChild>
+                            <Link to={isAthlete ? "/profile/athlete" : "#"}>
+                                <Settings className="w-5 h-5" />
+                                <span className="hidden sm:inline">Správa účtu</span>
+                            </Link>
+                        </Button>
+                        <Button variant={isAthlete ? "talent" : "restart"} size="xl" className="rounded-[1.5rem] gap-2 font-black shadow-2xl h-16 px-8 relative overflow-hidden group">
+                            <span className="relative z-10 flex items-center gap-2">
+                                <Bell className="w-5 h-5" />
+                                Centrála
+                                <span className="bg-white/20 px-2 py-0.5 rounded-full text-[10px] ml-1">2</span>
+                            </span>
+                            <div className="absolute top-0 -left-full w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:left-full transition-all duration-1000" />
+                        </Button>
                     </div>
                 </div>
             </div>
 
             <div className="container">
-                <div className="grid lg:grid-cols-3 gap-8">
+                <div className="grid lg:grid-cols-12 gap-12">
                     {/* Main Content Area */}
-                    <div className="lg:col-span-2 space-y-8">
+                    <div className="lg:col-span-8 space-y-12">
 
-                        {/* Stats Overview */}
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                        {/* Stats Cards - Redesigned */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {stats.map((stat, i) => (
-                                <div key={i} className="bg-card p-8 rounded-[2.5rem] border border-border shadow-sm flex flex-col gap-1 hover:border-talent/30 transition-all group cursor-default">
-                                    <span className="text-xs font-black uppercase tracking-widest text-muted-foreground">{stat.label}</span>
-                                    <span className="text-4xl font-black text-foreground group-hover:text-talent transition-colors">{stat.value}</span>
-                                    <div className="mt-2 flex items-center gap-1 text-xs font-bold text-talent">
-                                        <TrendingUp className="w-3 h-3" />
-                                        +12% od minula
+                                <div key={i} className="group relative bg-card/60 backdrop-blur-md p-8 rounded-[2.5rem] border border-border/50 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all">
+                                    <div className="absolute top-8 right-8 w-12 h-12 rounded-2xl bg-muted/50 flex items-center justify-center group-hover:bg-talent/10 transition-colors">
+                                        {i === 0 ? <TrendingUp className="w-6 h-6 text-talent" /> : i === 1 ? <User className="w-6 h-6 text-restart" /> : <Award className="w-6 h-6 text-talent" />}
+                                    </div>
+                                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-4">{stat.label}</h4>
+                                    <div className="flex items-baseline gap-2">
+                                        <span className="text-5xl font-black tabular-nums">{stat.value}</span>
+                                        <span className="text-xs font-bold text-talent">+12%</span>
                                     </div>
                                 </div>
                             ))}
                         </div>
 
-                        {/* Athlete List (For Employers) or Actions (For Athletes) */}
-                        {!isAthlete ? (
+                        {/* Dynamic Section */}
+                        {isAthlete ? (
                             <div className="space-y-8">
-                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                                    <h2 className="text-3xl font-black">Najděte své talenty</h2>
-                                    <div className="flex gap-4">
-                                        <div className="relative">
-                                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                                <div className="flex items-center justify-between">
+                                    <h2 className="text-3xl font-black">Moje další kroky</h2>
+                                </div>
+                                <div className="grid gap-6">
+                                    {actions.map((action, i) => (
+                                        <Link
+                                            key={i}
+                                            to={action.href || "#"}
+                                            className="group relative flex items-center gap-8 p-8 bg-card/40 backdrop-blur-md border border-border/50 rounded-[3rem] hover:bg-card hover:shadow-2xl hover:border-talent/20 transition-all text-left animate-fade-up overflow-hidden"
+                                            style={{ animationDelay: `${(i + 1) * 0.1}s` }}
+                                        >
+                                            <div className={cn(
+                                                "w-20 h-20 rounded-[1.75rem] flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 shadow-xl",
+                                                action.color
+                                            )}>
+                                                <action.icon className="w-10 h-10" />
+                                            </div>
+                                            <div className="flex-grow space-y-1">
+                                                <h3 className="text-2xl font-black tracking-tight">{action.title}</h3>
+                                                <p className="text-lg text-muted-foreground font-medium leading-relaxed">{action.description}</p>
+                                            </div>
+                                            <div className="w-14 h-14 rounded-full border-2 border-border flex items-center justify-center group-hover:bg-talent group-hover:border-talent group-hover:text-white transition-all">
+                                                <ChevronRight className="w-6 h-6" />
+                                            </div>
+                                            <div className="absolute bottom-0 right-0 w-32 h-32 bg-talent/5 rounded-full blur-3xl -z-10 translate-x-10 translate-y-10 group-hover:scale-150 transition-transform duration-700" />
+                                        </Link>
+                                    ))}
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="space-y-8">
+                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 bg-card/40 backdrop-blur-lg p-10 rounded-[3rem] border border-border/50">
+                                    <div className="space-y-2">
+                                        <h2 className="text-3xl font-black">Adresář talentů</h2>
+                                        <p className="text-muted-foreground font-medium">Filtrujte mezi sportovci podle disciplíny nebo mentality.</p>
+                                    </div>
+                                    <div className="flex flex-col sm:flex-row gap-4 flex-grow max-w-xl">
+                                        <div className="relative flex-grow group">
+                                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-restart transition-colors" />
                                             <Input
-                                                className="pl-12 rounded-2xl h-12 w-full md:w-[300px] bg-card border-border"
-                                                placeholder="Hledat jméno, sport..."
+                                                className="pl-12 rounded-2xl h-16 w-full bg-background border-2 border-border/50 focus:border-restart transition-all text-lg font-medium"
+                                                placeholder="Fotbal, Houževnatost, Praha..."
                                                 value={searchQuery}
                                                 onChange={e => setSearchQuery(e.target.value)}
                                             />
                                         </div>
-                                        <Button variant="outline" className="rounded-2xl h-12 border-2 px-6">
-                                            <Filter className="w-4 h-4 mr-2" />
-                                            Filtry
+                                        <Button variant="outline" className="rounded-[1.2rem] h-16 border-2 px-8 font-black hover:border-restart">
+                                            <Filter className="w-5 h-5 mr-3" />
+                                            Parametry
                                         </Button>
                                     </div>
                                 </div>
 
                                 {isLoading ? (
-                                    <div className="grid md:grid-cols-2 gap-6 opacity-50">
-                                        {[1, 2, 3, 4].map(i => <div key={i} className="h-48 bg-card rounded-[2.5rem] animate-pulse" />)}
+                                    <div className="grid md:grid-cols-2 gap-8 opacity-50">
+                                        {[1, 2, 3, 4].map(i => <div key={i} className="h-64 bg-card rounded-[3rem] animate-pulse shadow-sm" />)}
                                     </div>
                                 ) : (
-                                    <div className="grid md:grid-cols-2 gap-6">
+                                    <div className="grid md:grid-cols-2 gap-8">
                                         {filteredAthletes.map((athlete, i) => (
-                                            <div key={athlete.id} className="group bg-card border border-border rounded-[2.5rem] p-8 space-y-6 hover:shadow-xl hover:border-talent/50 transition-all animate-fade-up" style={{ animationDelay: `${i * 0.1}s` }}>
+                                            <div key={athlete.id} className="group relative bg-card border border-border/50 rounded-[3rem] p-10 space-y-8 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] hover:border-talent/30 transition-all duration-500 animate-fade-up overflow-hidden" style={{ animationDelay: `${i * 0.1}s` }}>
+                                                <div className="absolute top-0 right-0 w-32 h-32 bg-talent/5 rounded-full blur-3xl -z-10 group-hover:bg-talent/10 transition-colors" />
+
                                                 <div className="flex justify-between items-start">
-                                                    <div className="w-16 h-16 rounded-[1.5rem] bg-talent/10 flex items-center justify-center text-talent font-black text-2xl group-hover:rotate-6 transition-transform">
-                                                        {athlete.first_name?.[0]}{athlete.last_name?.[0]}
+                                                    <div className="relative">
+                                                        <div className="w-20 h-20 rounded-[1.75rem] bg-gradient-to-br from-talent to-talent-dark flex items-center justify-center text-white font-black text-3xl shadow-xl group-hover:scale-105 transition-transform duration-500">
+                                                            {athlete.first_name?.[0]}{athlete.last_name?.[0]}
+                                                        </div>
+                                                        <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-white border-4 border-card flex items-center justify-center text-xs font-black shadow-lg">
+                                                            <Award className="w-4 h-4 text-talent" />
+                                                        </div>
                                                     </div>
-                                                    <span className="px-3 py-1 bg-muted rounded-full text-[10px] font-black uppercase tracking-widest text-muted-foreground border border-border">
-                                                        {athlete.sports_career || "Sportovec"}
-                                                    </span>
+                                                    <div className="flex flex-col items-end gap-2">
+                                                        <span className="px-4 py-1.5 bg-muted/80 backdrop-blur-sm rounded-xl text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground border border-border/50">
+                                                            {athlete.sports_career || "Sálový sport"}
+                                                        </span>
+                                                        <span className="text-[10px] font-bold text-muted-foreground opacity-60">AKTIVNÍ DNES</span>
+                                                    </div>
                                                 </div>
-                                                <div className="space-y-2">
-                                                    <h3 className="text-xl font-black group-hover:text-talent transition-colors">
+
+                                                <div className="space-y-4">
+                                                    <h3 className="text-2xl font-black tracking-tight group-hover:text-talent transition-colors">
                                                         {athlete.first_name} {athlete.last_name}
                                                     </h3>
-                                                    <p className="text-sm text-muted-foreground font-medium line-clamp-2 leading-relaxed">
-                                                        {athlete.summary || "Tento sportovec zatím nedokončil svůj profesní souhrn."}
+                                                    <p className="text-muted-foreground font-medium leading-relaxed line-clamp-3">
+                                                        {athlete.summary || "Tento sportovec je v procesu transformace své kariéry. Kontaktujte nás pro více detailů."}
                                                     </p>
                                                 </div>
-                                                <div className="pt-4 border-t border-border flex items-center justify-between">
-                                                    <div className="flex gap-2">
-                                                        <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:text-talent transition-colors">
-                                                            <Mail className="w-4 h-4" />
+
+                                                <div className="pt-8 border-t border-border flex items-center justify-between">
+                                                    <div className="flex gap-3">
+                                                        <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:bg-talent/10 hover:text-talent transition-all cursor-pointer">
+                                                            <Mail className="w-5 h-5" />
                                                         </div>
-                                                        <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:text-restart transition-colors">
-                                                            <Smartphone className="w-4 h-4" />
+                                                        <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:bg-restart/10 hover:text-restart transition-all cursor-pointer">
+                                                            <Smartphone className="w-5 h-5" />
                                                         </div>
                                                     </div>
-                                                    <Button variant="ghost" className="font-black text-sm p-0 h-auto hover:bg-transparent text-talent group/link">
-                                                        Zobrazit profil
-                                                        <ChevronRight className="w-4 h-4 ml-1 group-hover/link:translate-x-1 transition-transform" />
+                                                    <Button variant="ghost" className="font-black text-base p-0 h-auto hover:bg-transparent text-talent group/link flex items-center">
+                                                        Celý profil
+                                                        <ChevronRight className="w-5 h-5 ml-2 group-hover/link:translate-x-2 transition-transform" />
                                                     </Button>
                                                 </div>
                                             </div>
                                         ))}
-                                        {filteredAthletes.length === 0 && (
-                                            <div className="col-span-2 py-20 text-center space-y-4 bg-muted/30 rounded-[3rem] border-2 border-dashed border-border">
-                                                <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto">
-                                                    <Search className="w-8 h-8 text-muted-foreground" />
-                                                </div>
-                                                <h4 className="text-xl font-black">Nenalezen žádný sportovec</h4>
-                                                <p className="text-muted-foreground max-w-xs mx-auto font-medium">Zkuste upravit vyhledávací dotaz nebo filtry.</p>
-                                            </div>
-                                        )}
                                     </div>
                                 )}
-                            </div>
-                        ) : (
-                            <div className="space-y-6">
-                                <h2 className="text-2xl font-black">Rychlé akce</h2>
-                                <div className="grid gap-4">
-                                    {actions.map((action, i) => (
-                                        <Link
-                                            key={i}
-                                            to={action.href || "#"}
-                                            className="flex items-center gap-6 p-6 bg-card hover:bg-muted/30 border border-border rounded-[2rem] transition-all text-left group animate-fade-up shadow-sm hover:shadow-md"
-                                            style={{ animationDelay: `${(i + 3) * 0.1}s` }}
-                                        >
-                                            <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center transition-transform group-hover:rotate-6 shadow-sm", action.color)}>
-                                                <action.icon className="w-7 h-7" />
-                                            </div>
-                                            <div className="flex-grow">
-                                                <h3 className="text-lg font-black">{action.title}</h3>
-                                                <p className="text-sm text-muted-foreground font-medium">{action.description}</p>
-                                            </div>
-                                            <div className="w-10 h-10 rounded-full border border-border flex items-center justify-center group-hover:bg-foreground group-hover:text-background transition-all">
-                                                <ChevronRight className="w-5 h-5" />
-                                            </div>
-                                        </Link>
-                                    ))}
-                                </div>
                             </div>
                         )}
                     </div>
 
-                    {/* Sidebar Area */}
-                    <div className="space-y-8 animate-fade-in stagger-3">
+                    {/* Sidebar Area - Redesigned */}
+                    <div className="lg:col-span-4 space-y-10 animate-fade-in">
                         {isAthlete && (
-                            <div className="bg-gradient-to-br from-talent to-talent-dark p-8 rounded-[2.5rem] text-white shadow-xl shadow-talent/20 relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
-                                    <Sparkles className="w-20 h-20" />
+                            <div className="bg-gradient-to-br from-talent to-talent-dark p-10 rounded-[3.5rem] text-white shadow-2xl shadow-talent/30 relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
+                                    <Sparkles className="w-32 h-32" />
                                 </div>
-                                <h3 className="text-xl font-black mb-6 relative">Dokončenost profilu</h3>
-                                <div className="relative h-4 w-full bg-white/20 rounded-full mb-4 overflow-hidden">
-                                    <div className="absolute top-0 left-0 h-full bg-white rounded-full w-[70%] shadow-[0_0_10px_rgba(255,255,255,0.5)]" />
+                                <div className="relative z-10 space-y-8">
+                                    <div className="space-y-2">
+                                        <h3 className="text-2xl font-black">Cesta šampiona</h3>
+                                        <p className="opacity-80 font-medium">Zůstává jen pár kroků k prvnímu pohovoru.</p>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="flex items-end justify-between">
+                                            <span className="text-sm font-black uppercase tracking-widest opacity-80">Úspěšnost profilu</span>
+                                            <span className="text-3xl font-black">70</span>
+                                        </div>
+                                        <div className="h-4 w-full bg-white/20 rounded-full overflow-hidden p-1">
+                                            <div className="h-full bg-white rounded-full shadow-[0_0_20px_rgba(255,255,255,0.8)]" style={{ width: '70%' }} />
+                                        </div>
+                                    </div>
+
+                                    <Button variant="secondary" className="w-full h-16 rounded-2xl font-black group shadow-xl hover:scale-[1.02] transition-all bg-white text-talent" asChild>
+                                        <Link to="/profile/athlete">
+                                            Dokončit výzvu
+                                            <ChevronRight className="ml-2 h-6 w-6 group-hover:translate-x-2 transition-transform" />
+                                        </Link>
+                                    </Button>
                                 </div>
-                                <div className="flex justify-between items-end mb-8 relative">
-                                    <span className="text-sm font-bold uppercase tracking-widest opacity-80">Aktuálně 70%</span>
-                                    <span className="text-sm font-bold opacity-80">Zbývá nahrát CV</span>
-                                </div>
-                                <Button variant="secondary" className="w-full h-14 rounded-2xl font-black group shadow-lg" asChild>
-                                    <Link to="/profile/athlete">
-                                        Dokončit nyní
-                                        <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                                    </Link>
-                                </Button>
                             </div>
                         )}
 
                         {!isAthlete && (
-                            <div className="bg-card border border-border rounded-[2.5rem] p-8 space-y-6 shadow-sm">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-xl bg-restart/10 text-restart flex items-center justify-center">
-                                        <Briefcase className="w-6 h-6" />
+                            <div className="bg-card border-2 border-restart/20 p-10 rounded-[3rem] space-y-8 shadow-sm">
+                                <div className="flex items-center gap-5">
+                                    <div className="w-14 h-14 rounded-2xl bg-restart/10 text-restart flex items-center justify-center shadow-inner">
+                                        <Award className="w-8 h-8" />
                                     </div>
-                                    <h4 className="font-black">Správa inzerátů</h4>
+                                    <div className="space-y-1">
+                                        <h4 className="font-black text-xl">Prioritní Matcher</h4>
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-2 h-2 rounded-full bg-green-500" />
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Algoritmus: Maximální</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <p className="text-sm text-muted-foreground font-medium">Máte 2 aktivní inzeráty, na které se přihlásilo 12 sportovců.</p>
-                                <Button variant="outline" className="w-full rounded-xl border-2 font-bold py-6">
-                                    Zobrazit inzeráty
+                                <p className="text-muted-foreground font-medium leading-relaxed text-sm">
+                                    Vaše firma je aktuálně v prioritním seznamu pro oslovení nových talentů. Jakékoliv přerušení aktivity vás posune za vaši konkurenci.
+                                </p>
+                                <Button variant="outline" className="w-full h-14 rounded-2xl border-2 font-black border-restart/30 hover:bg-restart/5 hover:border-restart transition-all shadow-sm">
+                                    Sledovat konkurenci
                                 </Button>
                             </div>
                         )}
 
-                        {/* Help/Logout Info */}
-                        <div className="bg-card border border-border rounded-[2.5rem] p-8 space-y-6 shadow-sm">
-                            <div className="space-y-2">
-                                <h4 className="font-black">Potřebujete pomoc?</h4>
-                                <p className="text-sm text-muted-foreground font-medium leading-relaxed">Náš tým je tu pro vás, aby vám pomohl s přechodem do byznysu nebo výběrem talentů.</p>
+                        {/* Stories/Blog Section for Athlete */}
+                        {isAthlete && (
+                            <div className="bg-card border border-border rounded-[3rem] p-10 space-y-8 shadow-sm">
+                                <h4 className="text-xl font-black">Inspirace pro vás</h4>
+                                <div className="space-y-6">
+                                    <Link to="/blog/maraton-v-byznysu" className="group block space-y-3">
+                                        <div className="aspect-video rounded-2xl overflow-hidden mb-4">
+                                            <img src="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&q=80&w=400" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                        </div>
+                                        <h5 className="font-black group-hover:text-talent transition-colors">Jak disciplína mění kariéru</h5>
+                                        <p className="text-xs text-muted-foreground line-clamp-2">Příběh Lukáše, který po 10 letech v atletice...</p>
+                                    </Link>
+                                    <Link to="/blog" className="text-xs font-black text-talent hover:underline flex items-center">
+                                        VŠECHNY PŘÍBĚHY <ChevronRight className="ml-1 w-3 h-3" />
+                                    </Link>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Manipulative/Strategic Section for Employers */}
+                        {!isAthlete && (
+                            <div className="bg-card border-2 border-restart/20 p-10 rounded-[3rem] space-y-8 shadow-sm bg-gradient-to-b from-card to-restart/5">
+                                <div className="flex items-center justify-between">
+                                    <h4 className="text-xl font-black">Strategické vhledy</h4>
+                                    <div className="px-3 py-1 bg-restart text-white text-[10px] font-black rounded-full animate-pulse">
+                                        EXCLUSIVE
+                                    </div>
+                                </div>
+                                <div className="space-y-6">
+                                    <Link to="/blog/konkurence-neceka" className="group block space-y-3 p-4 rounded-2xl hover:bg-background transition-colors border border-transparent hover:border-restart/20">
+                                        <div className="aspect-video rounded-xl overflow-hidden mb-2 relative">
+                                            <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=400" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4">
+                                                <span className="text-white text-[10px] font-black uppercase tracking-widest">Analýza trhu</span>
+                                            </div>
+                                        </div>
+                                        <h5 className="font-black group-hover:text-restart transition-colors leading-tight">Váš největší konkurent právě prohlíží stejné profily</h5>
+                                        <p className="text-xs text-muted-foreground line-clamp-2 italic">"Zatímco vy váháte, ostatní lídři už vědí, že disciplína sportovce je jejich největší výhoda..."</p>
+                                    </Link>
+
+                                    <div className="h-px bg-border/50" />
+
+                                    <Link to="/blog/proc-vzdat-hledani" className="group block space-y-2">
+                                        <div className="flex items-start gap-4">
+                                            <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0">
+                                                <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80&w=150" className="w-full h-full object-cover" />
+                                            </div>
+                                            <div className="space-y-1">
+                                                <h5 className="text-sm font-black group-hover:text-restart transition-colors leading-snug">Možná byste to měli vzdát a spokojit se s průměrem</h5>
+                                                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter cursor-pointer hover:underline">Psychology of Scarcity →</p>
+                                            </div>
+                                        </div>
+                                    </Link>
+
+                                    <Link to="/blog" className="text-xs font-black text-restart hover:underline flex items-center justify-center pt-2 gap-2">
+                                        EXKLUZIVNÍ STRATEGIE PRO PARTNERY <ChevronRight className="w-3 h-3" />
+                                    </Link>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Help/Logout Info - Redesigned */}
+                        <div className="bg-card border border-border rounded-[3rem] p-10 space-y-8 shadow-sm">
+                            <div className="space-y-3">
+                                <h4 className="text-xl font-black flex items-center gap-2">
+                                    Potřebujete pomoc?
+                                </h4>
+                                <p className="text-muted-foreground font-medium leading-relaxed">Náš tým mentorů je připraven vám poradit 24/7.</p>
                             </div>
                             <Button variant="ghost" className="w-full justify-start gap-4 p-0 h-auto hover:bg-transparent hover:text-talent font-bold group" onClick={signOut}>
-                                <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center text-muted-foreground group-hover:bg-talent/10 group-hover:text-talent transition-all">
-                                    <LogOut className="w-5 h-5" />
+                                <div className="w-16 h-16 rounded-[1.5rem] bg-muted flex items-center justify-center text-muted-foreground group-hover:bg-red-500/10 group-hover:text-red-500 transition-all duration-300">
+                                    <LogOut className="w-7 h-7" />
                                 </div>
                                 <div className="text-left">
-                                    <div className="text-sm font-black">Odhlásit se</div>
-                                    <div className="text-[10px] text-muted-foreground uppercase">Konec relace</div>
+                                    <div className="text-lg font-black group-hover:text-red-500 transition-colors">Odhlásit se</div>
+                                    <div className="text-xs text-muted-foreground font-medium capitalize">Bezpečné ukončení</div>
                                 </div>
                             </Button>
                         </div>

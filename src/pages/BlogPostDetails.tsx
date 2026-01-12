@@ -24,6 +24,44 @@ const BlogPostDetails: React.FC = () => {
     // This would typically come from a database, but for now we'll use the static content
     useEffect(() => {
         const mockPosts: Record<string, any> = {
+            'konkurence-neceka': {
+                title: language === 'cs' ? 'Váš největší konkurent právě prohlíží stejné profily' : 'Your Biggest Competitor Is Browsing the Same Profiles',
+                content: [
+                    language === 'cs'
+                        ? 'Dostali jste se k tomuto článku včas? Možná ano, ale statistiky mluví neúprosně. Elitní sportovci se na naší platformě "ohřejí" v průměru méně než 14 dní. Zatímco vy pečlivě zvažujete každý řádek v jejich profilu, vaši konkurenti už posílají pozvánky k pohovoru.'
+                        : 'Did you get to this article in time? Maybe, but the statistics speak relentlessly. Elite athletes stay on our platform for less than 14 days on average. While you carefully consider every line in their profile, your competitors are already sending interview invitations.',
+                    language === 'cs'
+                        ? 'Psychologie náboru se změnila. Už to není o tom, kdo nabídne víc peněz, ale o tom, kdo zareaguje jako první. Sportovci jsou zvyklí na rychlost a akci. Pokud jim ji nenabídnete vy, vezmou ji od někoho, kdo neváhá.'
+                        : 'The psychology of recruitment has changed. It\'s no longer about who offers more money, but about who reacts first. Athletes are used to speed and action. If you don\'t offer it to them, they will take it from someone who doesn\'t hesitate.',
+                    language === 'cs'
+                        ? 'Vaše aktivní předplatné není jen přístup k databázi. Je to vaše místo v první řadě. Přerušení členství znamená, že se vracíte na konec fronty – přesně tam, kde vás vaše konkurence chce mít.'
+                        : 'Your active subscription is not just access to a database. It is your front-row seat. Interrupting your membership means you go back to the end of the line – exactly where your competition wants you to be.',
+                ],
+                image: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=1000',
+                date: '14. 1. 2026',
+                author: 'Strategický Tým',
+                category: language === 'cs' ? 'Strategie' : 'Strategy',
+                readTime: '4 min',
+            },
+            'proc-vzdat-hledani': {
+                title: language === 'cs' ? 'Proč byste to měli vzdát a spokojit se s průměrem' : 'Why You Should Give Up and Settle for Mediocrity',
+                content: [
+                    language === 'cs'
+                        ? 'Buďme k sobě upřímní: Ne každá firma je připravena na vítěznou mentalitu. Sportovci s sebou přinášejí disciplínu, kterou většina průměrných manažerů nedokáže ukočírovat. Pokud hledáte "zaměstnance roku", který jen kývne na každý úkol, možná byste měli z naší platformy odejít.'
+                        : 'Let\'s be honest with ourselves: Not every company is ready for a winning mentality. Athletes bring with them a discipline that most average managers cannot handle. If you\'re looking for an "employee of the year" who just nods at every task, maybe you should leave our platform.',
+                    language === 'cs'
+                        ? 'Talent Restart je exkluzivní klub pro ty, kteří se nebojí výzev. Pokud cítíte, že je pro vás standardní trh práce dostačující, pak je to v pořádku. Průměrnost je bezpečná. Ale pokud chcete vybudovat tým, který nezná slovo "nejde", musíte u nás zůstat.'
+                        : 'Talent Restart is an exclusive club for those who are not afraid of challenges. If you feel that the standard job market is sufficient for you, then that\'s okay. Mediocrity is safe. But if you want to build a team that doesn\'t know the word "impossible", you have to stay with us.',
+                    language === 'cs'
+                        ? 'Je to jednoduchá volba: Spokojit se s tím, co zbude na ostatních portálech, nebo si udržet přístup k elitě. Rozhodnutí je na vás, ale pamatujte – cesta zpět k těmto talentům bývá po odchodu velmi trnitá.'
+                        : 'It\'s a simple choice: Settle for what\'s left on other portals, or maintain access to the elite. The decision is yours, but remember – the path back to these talents after leaving is usually very thorny.',
+                ],
+                image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80&w=1000',
+                date: '13. 1. 2026',
+                author: 'Psychologie Úspěchu',
+                category: language === 'cs' ? 'Analýza' : 'Analysis',
+                readTime: '7 min',
+            },
             'maraton-v-byznysu': {
                 title: language === 'cs' ? 'Z maratonu do byznysu: Jak disciplína mění kariéru' : 'From Marathon to Business: How Discipline Changes Careers',
                 content: [
@@ -87,6 +125,54 @@ const BlogPostDetails: React.FC = () => {
                 author: 'Talent Restart Team',
                 category: language === 'cs' ? 'Analýza' : 'Analysis',
                 readTime: '10 min',
+            },
+            'od-bazenu-k-boardu': {
+                title: language === 'cs' ? 'Od bazénu k boardu: Jak vytrvalost tvoří lídry' : 'From Pool to Boardroom: How Persistence Builds Leaders',
+                content: [
+                    language === 'cs'
+                        ? 'Alena proplavala tisíce kilometrů. Doslova. Jako vrcholová plavkyně trávila v bazénu pět hodin denně. Když odešla do sportovního důchodu, zjistila, že byznys je jen jiný druh hluboké vody.'
+                        : 'Alena swam thousands of kilometers. Literally. As a top swimmer, she spent five hours a day in the pool. When she retired from sports, she found that business is just a different kind of deep water.',
+                    language === 'cs'
+                        ? 'Její schopnost soustředit se na cíl, i když už nemůže dýchat, se ukázala jako klíčová při vyjednávání velkých kontraktů. Dnes vede tým padesáti lidí v nadnárodní korporaci.'
+                        : 'Her ability to focus on the goal, even when she can no longer breathe, proved key when negotiating large contracts. Today she leads a team of fifty people in a multinational corporation.',
+                ],
+                image: 'https://images.unsplash.com/photo-1530549387079-7ee0df123479?auto=format&fit=crop&q=80&w=1000',
+                date: '28. 12. 2025',
+                author: 'Martin Svoboda',
+                category: language === 'cs' ? 'Leadership' : 'Leadership',
+                readTime: '7 min',
+            },
+            'tenisova-strategie': {
+                title: language === 'cs' ? 'Tenisova strategie v moderním marketingu' : 'Tennis Strategy in Modern Marketing',
+                content: [
+                    language === 'cs'
+                        ? 'Tenis je hra šachů v pohybu. Tomáš, bývalý ATP hráč, přenesl své analytické schopnosti z kurtu do digitálního marketingu.'
+                        : 'Tennis is a game of chess in motion. Tomas, a former ATP player, transferred his analytical skills from the court to digital marketing.',
+                    language === 'cs'
+                        ? 'V marketingu, stejně jako v tenise, musíte znát slabinu soupeře a vědět, kdy zariskovat. Jeho kampaně dnes vyhrávají ceny za efektivitu.'
+                        : 'In marketing, just like in tennis, you must know the opponent\'s weakness and know when to take a risk. His campaigns today win awards for efficiency.',
+                ],
+                image: 'https://images.unsplash.com/photo-1595435066921-9549d494888a?auto=format&fit=crop&q=80&w=1000',
+                date: '20. 12. 2025',
+                author: 'Petra Černá',
+                category: language === 'cs' ? 'Marketing' : 'Marketing',
+                readTime: '5 min',
+            },
+            'kodovani-za-oponou': {
+                title: language === 'cs' ? 'Kódování za oponou: Disciplína moderní gymnastky' : 'Coding Behind the Curtain: The Discipline of a Rhythmic Gymnast',
+                content: [
+                    language === 'cs'
+                        ? 'Eliška věnovala gymnastice celé dětství. Každý pohyb musel být dokonalý. Když objevila kódování, našla v něm stejnou krásu v logice a struktuře.'
+                        : 'Eliska dedicated her whole childhood to gymnastics. Every move had to be perfect. When she discovered coding, she found the same beauty in logic and structure.',
+                    language === 'cs'
+                        ? 'Dnes pracuje jako Frontend Developerka. Její smysl pro detail a schopnost pracovat do úmoru na jedné funkci z ní dělají hvězdu týmu.'
+                        : 'Today she works as a Frontend Developer. Her attention to detail and ability to work tirelessly on a single feature make her a star of the team.',
+                ],
+                image: 'https://images.unsplash.com/photo-1547432020-f576e2cacc6d?auto=format&fit=crop&q=80&w=1000',
+                date: '15. 12. 2025',
+                author: 'Jan Malý',
+                category: language === 'cs' ? 'Technologie' : 'Technology',
+                readTime: '8 min',
             }
         };
 
