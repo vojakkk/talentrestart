@@ -53,7 +53,7 @@ const Pricing: React.FC = () => {
         <div className="container relative z-10 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-talent/10 text-talent text-sm font-bold uppercase tracking-widest mb-8 animate-fade-up">
             <Zap className="w-4 h-4" />
-            Transparentní Ceny
+            {t('pricing.transparent')}
           </div>
 
           <h1 className="text-display-md md:text-display-lg font-black mb-6 leading-tight animate-fade-up">
@@ -69,9 +69,7 @@ const Pricing: React.FC = () => {
               <Heart className="w-5 h-5 fill-talent" />
             </div>
             <p className="font-bold text-foreground">
-              {language === 'cs'
-                ? 'Sportovci mají vždy 100% přístup ZDARMA'
-                : 'Athletes always get 100% FREE access'}
+              {t('pricing.athletesFree')}
             </p>
           </div>
         </div>
@@ -94,7 +92,7 @@ const Pricing: React.FC = () => {
               >
                 {plan.highlighted && (
                   <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-talent text-white text-xs font-black uppercase tracking-[0.2em] px-6 py-2 rounded-full shadow-lg">
-                    {language === 'cs' ? 'Nejoblíbenější' : 'Most Popular'}
+                    {t('pricing.popular')}
                   </div>
                 )}
 
@@ -114,7 +112,7 @@ const Pricing: React.FC = () => {
                 </div>
 
                 <div className="flex-grow">
-                  <p className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-6">Co je zahrnuto:</p>
+                  <p className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-6">{language === 'cs' ? 'Co je zahrnuto:' : 'What is included:'}</p>
                   <ul className="space-y-5 mb-12">
                     {plan.features.map((feature, fIndex) => (
                       <li key={fIndex} className="flex items-start gap-4">
@@ -146,7 +144,7 @@ const Pricing: React.FC = () => {
                 </Button>
 
                 <p className="text-center text-xs font-bold text-muted-foreground mt-6 uppercase tracking-widest opacity-50">
-                  Žádné skryté poplatky
+                  {t('pricing.noFees')}
                 </p>
               </div>
             ))}
@@ -155,10 +153,10 @@ const Pricing: React.FC = () => {
           {/* Trust Badges */}
           <div className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-8 py-12 border-t border-border/50 max-w-5xl mx-auto">
             {[
-              { icon: ShieldCheck, label: 'Bezpečné platby' },
-              { icon: Star, label: 'Špičková podpora' },
-              { icon: Zap, label: 'Okamžitý přístup' },
-              { icon: Zap, label: 'Férové podmínky' },
+              { icon: ShieldCheck, label: t('pricing.secure') },
+              { icon: Star, label: t('pricing.support') },
+              { icon: Zap, label: t('pricing.instant') },
+              { icon: Zap, label: t('pricing.fair') },
             ].map((badge, i) => (
               <div key={i} className="flex flex-col items-center gap-3 text-center opacity-70 grayscale hover:grayscale-0 hover:opacity-100 transition-all cursor-default">
                 <badge.icon className="w-6 h-6 text-muted-foreground" />

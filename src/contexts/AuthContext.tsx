@@ -4,6 +4,7 @@ import { User } from '@supabase/supabase-js';
 
 interface AuthContextType {
     user: User | null;
+    isPremium: boolean;
     loading: boolean;
     signOut: () => Promise<void>;
 }
@@ -32,12 +33,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         };
     }, []);
 
+    const isPremium = user?.user_metadata?.is_premium === true;
+
     const signOut = async () => {
         await supabase.auth.signOut();
     };
 
     return (
-        <AuthContext.Provider value={{ user, loading, signOut }}>
+        <AuthContext.Provider value={{ user, isPremium, loading, signOut }}>
             {children}
         </AuthContext.Provider>
     );

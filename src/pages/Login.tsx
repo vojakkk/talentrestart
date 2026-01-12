@@ -275,26 +275,6 @@ const Login: React.FC = () => {
                 )}
               </Button>
 
-              <div className="pt-6 border-t border-border/50 text-center">
-                <p className="text-sm text-muted-foreground font-medium">
-                  Ještě nemáte účet?{' '}
-                  <Link
-                    to={isAthlete ? "/signup?role=athlete" : "/signup?role=employer"}
-                    className={cn(
-                      "hover:underline font-black ml-1 transition-colors",
-                      isAthlete ? "text-talent" : "text-restart"
-                    )}
-                  >
-                    Registrovat se zdarma
-                  </Link>
-                </p>
-                {isAthlete && (
-                  <p className="text-xs text-muted-foreground/60 mt-3 flex items-center justify-center gap-1">
-                    <Sparkles className="w-3 h-3" />
-                    Včetně AI kariérního asistenta
-                  </p>
-                )}
-              </div>
             </form>
           </div>
 

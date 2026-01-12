@@ -6,10 +6,12 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import heroAthlete from '@/assets/hero-athlete-clean.png';
+import AICareerAssistantModal from '@/components/AICareerAssistantModal';
 
 const Athletes: React.FC = () => {
   const { t, language } = useLanguage();
   const { user } = useAuth();
+  const [isAIModalOpen, setIsAIModalOpen] = React.useState(false);
 
   const benefits = [
     {
@@ -65,12 +67,12 @@ const Athletes: React.FC = () => {
             <div className="max-w-2xl animate-fade-in">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-talent/10 text-talent text-sm font-bold uppercase tracking-widest mb-8">
                 <Rocket className="w-4 h-4" />
-                Váš nový začátek
+                {t('athletes.hero.newStart')}
               </div>
 
               <h1 className="text-display-md md:text-display-lg font-black mb-8 leading-[1.05]">
-                <span className="block">{language === 'cs' ? 'Vaše sportovní kariéra' : 'Your athletic career'}</span>
-                <span className="block text-gradient-brand mt-1">{language === 'cs' ? 'má obrovskou hodnotu' : 'has enormous value'}</span>
+                <span className="block">{t('athletes.hero.careerValue')}</span>
+                <span className="block text-gradient-brand mt-1">{t('athletes.hero.enormousValue')}</span>
               </h1>
 
               <p className="text-xl text-muted-foreground mb-10 leading-relaxed font-medium">
@@ -91,12 +93,14 @@ const Athletes: React.FC = () => {
               </div>
 
               <div className="flex flex-wrap gap-4">
-                <Button variant="talent" size="xl" className="h-16 px-10 rounded-2xl text-lg shadow-xl shadow-talent/20" asChild>
-                  <Link to="/signup?role=athlete">
-                    {t('hero.cta.athlete')}
-                    <ArrowRight className="ml-2 h-6 w-6" />
-                  </Link>
-                </Button>
+                {!user && (
+                  <Button variant="talent" size="xl" className="h-16 px-10 rounded-2xl text-lg shadow-xl shadow-talent/20" asChild>
+                    <Link to="/signup?role=athlete">
+                      {t('hero.cta.athlete')}
+                      <ArrowRight className="ml-2 h-6 w-6" />
+                    </Link>
+                  </Button>
+                )}
               </div>
             </div>
 
@@ -130,10 +134,10 @@ const Athletes: React.FC = () => {
         <div className="container">
           <div className="text-center mb-20 max-w-3xl mx-auto">
             <h2 className="text-display-sm md:text-display-md font-black mb-6">
-              Proč zvolit <span className="text-talent">Talent Restart?</span>
+              {t('athletes.whyRestart')}
             </h2>
             <p className="text-xl text-muted-foreground font-medium">
-              S námi nepíšete jen životopis, ale vyprávíte příběh svého úspěchu.
+              {t('athletes.notJustCv')}
             </p>
           </div>
 
@@ -208,15 +212,13 @@ const Athletes: React.FC = () => {
                 AI Career Assistant
               </div>
               <h2 className="text-display-sm font-black leading-tight">
-                {language === 'cs' ? 'Vaše medaile neumíme vystavit.' : 'We can\'t display your medals.'} <br />
+                {t('athletes.medals')} <br />
                 <span className="text-gradient-brand">
-                  {language === 'cs' ? 'Ale umíme je přeložit.' : 'But we can translate them.'}
+                  {t('athletes.translate')}
                 </span>
               </h2>
               <p className="text-xl text-muted-foreground font-medium leading-relaxed">
-                {language === 'cs'
-                  ? 'Náš pokročilý AI algoritmus analyzuje vaši sportovní historii a automaticky ji transformuje do jazyka, kterému rozumí HR manažeři a CEO.'
-                  : 'Our advanced AI algorithm analyzes your sports history and automatically transforms it into a language that HR managers and CEOs understand.'}
+                {t('athletes.aiDesc')}
               </p>
               <ul className="space-y-4">
                 {[
@@ -230,12 +232,29 @@ const Athletes: React.FC = () => {
                   </li>
                 ))}
               </ul>
-              <Button variant="outline" size="lg" className="rounded-xl border-2 px-8 font-bold mt-4">
+              <Button
+                variant="outline"
+                size="lg"
+                className="rounded-xl border-2 px-8 font-bold mt-4"
+                onClick={() => {
+                  if (user) {
+                    setIsAIModalOpen(true);
+                  } else {
+                    window.location.href = "/signup?role=athlete";
+                  }
+                }}
+              >
                 {language === 'cs' ? 'Vyzkoušet AI asistenta (Beta)' : 'Try AI Assistant (Beta)'}
               </Button>
             </div>
           </div>
         </div>
+
+        <AICareerAssistantModal
+          isOpen={isAIModalOpen}
+          onClose={() => setIsAIModalOpen(false)}
+          userName={user?.user_metadata?.first_name || 'Hrdino'}
+        />
       </section>
 
       {/* Final CTA */}
@@ -278,7 +297,7 @@ const Athletes: React.FC = () => {
                 </p>
                 <Button variant="talent" size="xl" className="h-16 px-12 rounded-2xl text-lg font-black shadow-xl" asChild>
                   <Link to="/signup?role=athlete">
-                    Vytvořit si profil zdarma
+                    {t('hero.cta.athlete')}
                     <ArrowRight className="ml-2 h-6 w-6" />
                   </Link>
                 </Button>

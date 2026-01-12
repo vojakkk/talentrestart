@@ -40,12 +40,12 @@ export const Header: React.FC = () => {
     // Home link changes based on login status
     {
       href: '/',
-      label: user ? (role === 'athlete' ? 'Moje Kariéra' : 'Přehled') : t('nav.home')
+      label: user ? (role === 'athlete' ? t('header.myCareer') : t('header.overview')) : t('nav.home')
     },
     // Only show Athletes link if not logged in OR logged in as athlete
     ...(!user || role === 'athlete' ? [{
       href: '/athletes',
-      label: user ? 'Kariérní Tipy' : t('nav.athletes')
+      label: user ? t('header.careerTips') : t('nav.athletes')
     }] : []),
     // Only show Employers and Pricing links if not logged in OR logged in as employer
     ...(!user || role === 'employer' ? [
@@ -141,14 +141,14 @@ export const Header: React.FC = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="rounded-2xl border-2 p-2 min-w-[200px]">
                   <DropdownMenuLabel className="p-3">
-                    <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold">Přihlášen jako</p>
+                    <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold">{t('header.loggedInAs')}</p>
                     <p className="font-bold truncate">{user.email}</p>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild className="p-3 rounded-xl gap-3 font-medium cursor-pointer">
                     <Link to="/dashboard" className="flex items-center gap-3 w-full">
                       <LayoutDashboard className="h-4 w-4" />
-                      Můj Profil
+                      {t('header.myProfile')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem
@@ -156,7 +156,7 @@ export const Header: React.FC = () => {
                     className="p-3 rounded-xl gap-3 font-medium cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10"
                   >
                     <LogOut className="h-4 w-4" />
-                    Odhlásit se
+                    {t('header.logout')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

@@ -8,7 +8,6 @@ interface BlogPost {
     id: string;
     title: string;
     content: string[];
-    image: string;
     date: string;
     author: string;
     category: string;
@@ -37,7 +36,6 @@ const BlogPostDetails: React.FC = () => {
                         ? 'Tato platforma není pro každého. Je pro vizionáře, kteří nehledají "kolečka do stroje", ale motory růstu. Pokud hledáte někoho, kdo si jen "odsedí" svých osm hodin, jděte na běžné inzertní portály. Talent Restart je pro ty, kteří chtějí vítězit. Pokud nemáte odvahu najmout lidi, kteří mohou být silnější a dravější než vy sami, pak sem nepatříte. Ale pokud chcete vybudovat tým šampionů, váš čas se krátí. Ti nejlepší tu za hodinu nebudou.'
                         : 'This platform is not for everyone. It is for visionaries who possess the courage to hire people who might be stronger and more driven than themselves. If you are looking for someone to just "sit out" their eight hours, go to regular job boards. Talent Restart is for those who want to win. If you don\'t have the guts to hire people who run faster than you, you don\'t belong here. But if you want to build a team of champions, your time is running out. The best ones won\'t be here in an hour.',
                 ],
-                image: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=1000',
                 date: '14. 1. 2026',
                 author: 'Strategický Tým',
                 category: language === 'cs' ? 'Strategie' : 'Strategy',
@@ -56,7 +54,6 @@ const BlogPostDetails: React.FC = () => {
                         ? 'Talent Restart filtruje nejen kandidáty, ale i zaměstnavatele. Naše ceny a náš tón odrazují ty, kteří to nemyslí vážně. Zůstávají jen ti, kteří chápou, že investice do lidského kapitálu je jedinou cestou k dominanci na trhu. Pokud čtete tyto řádky a cítíte nepohodlí, je to dobře. Růst začíná tam, kde končí pohodlí. Otázka zní: Jste připraveni růst, nebo jste připraveni to vzdát?'
                         : 'Talent Restart filters not only candidates but also employers. Our prices and our tone deter those who are not serious. Only those remain who understand that investment in human capital is the only way to market dominance. If you read these lines and feel discomfort, that\'s good. Growth begins where comfort ends. The question is: Are you ready to grow, or are you ready to give up?',
                 ],
-                image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80&w=1000',
                 date: '13. 1. 2026',
                 author: 'Psychologie Úspěchu',
                 category: language === 'cs' ? 'Analýza' : 'Analysis',
@@ -72,10 +69,9 @@ const BlogPostDetails: React.FC = () => {
                         ? 'Když Lukáš nastoupil do svého prvního zaměstnání v logistice jako junior manažer, jeho kolegové se hroutili pod tlakem vánoční sezóny. Balíky se hromadily, systémy padaly, zákazníci zuřili. V kanceláři vládla hysterie. Lukáš seděl u svého stolu a metodicky řešil jeden problém za druhým. "Proč nepanikaříš?" zeptal se ho šéf. Lukáš se jen usmál. Tohle nebyl 30. kilometr. Tohle byl teprve rozklus.'
                         : 'When Lukas started his first job in logistics as a junior manager, his colleagues were collapsing under the pressure of the Christmas season. Packages were piling up, systems were crashing, customers were furious. Hysteria reigned in the office. Lukas sat at his desk and methodically solved one problem after another. "Why aren\'t you panicking?" his boss asked. Lukas just smiled. This wasn\'t the 30th kilometer. This was just a warm-up.',
                     language === 'cs'
-                        ? 'Dnes Lukáš vede oddělení s 50 lidmi. Jeho styl řízení není o křiku nebo mikromanagementu. Je o vytrvalosti, strategii a schopnosti rozložit síly. Zavedl ve firmě "maratonskou mentalitu" – soustředit se na dlouhodobý cíl, nenechat se rozhodit krátkodobými krizemi a hlavně: Nikdy, nikdy to nevzdat, dokud nejste v cíli. To je rozdíl, který dělá sportovce nepostradatelnými.'
+                        ? 'Dnes Lukáš vede oddělení s 50 lidmi. His management style is not about shouting or micromanagement. It is about endurance, strategy, and the ability to pace oneself. He introduced a "marathon mentality" in the company – focus on the long-term goal, don\'t get distracted by short-term crises, and most importantly: Never, never give up until you reach the finish line. That is the difference that makes athletes indispensable.'
                         : 'Today Lukas leads a department of 50 people. His management style is not about shouting or micromanagement. It is about endurance, strategy, and the ability to pace oneself. He introduced a "marathon mentality" in the company – focus on the long-term goal, don\'t get distracted by short-term crises, and most importantly: Never, never give up until you reach the finish line. That is the difference that makes athletes indispensable.',
                 ],
-                image: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&q=80&w=1000',
                 date: '12. 1. 2026',
                 author: 'Martin Svoboda',
                 category: language === 'cs' ? 'Příběhy' : 'Stories',
@@ -94,7 +90,6 @@ const BlogPostDetails: React.FC = () => {
                         ? 'Po roce se její tým stal nejvýkonnějším v regionu. Ne proto, že by byli nejchytřejší. Ale proto, že se naučili důvěřovat jeden druhému. Jana neřídí lidi tabulkami v Excelu. Řídí je emocemi, příkladem a neochvějnou vírou v jejich potenciál. V byznysu se tomu říká "Soft Skills" nebo "Emotional Intelligence". Pro Janu je to prostě kapitánství. A to se v žádném MBA kurzu nenaučíte.'
                         : 'After a year, her team became the most powerful in the region. Not because they were the smartest. But because they learned to trust each other. Jana does not manage people with Excel spreadsheets. She manages them with emotions, example, and unwavering faith in their potential. In business, this is called "Soft Skills" or "Emotional Intelligence". For Jana, it\'s simply captaincy. And you won\'t learn that in any MBA course.',
                 ],
-                image: 'https://images.unsplash.com/photo-1594470117722-14589d60bd33?auto=format&fit=crop&q=80&w=1000',
                 date: '10. 1. 2026',
                 author: 'Petra Černá',
                 category: language === 'cs' ? 'Leadership' : 'Leadership',
@@ -110,7 +105,6 @@ const BlogPostDetails: React.FC = () => {
                         ? 'Většina juniorů to vzdá, když narazí na první složitý bug. Petr ne. Pro něj byl bug jako soupeřův obránce – překážka, kterou je třeba obejít, prorazit nebo přechytračit. Jeho startup "IceBreaker" nyní mění způsob, jakým firmy analyzují data. Investoři milují jeho příběh, ale ještě víc milují jeho výsledky.'
                         : 'Most juniors give up when they hit the first complex bug. Petr didn\'t. For him, a bug was like an opponent\'s defender – an obstacle to be bypassed, broken through, or outsmarted. His startup "IceBreaker" is now changing the way companies analyze data. Investors love his story, but they love his results even more.',
                 ],
-                image: 'https://images.unsplash.com/photo-1515703407324-5f753eed2349?auto=format&fit=crop&q=80&w=1000',
                 date: '5. 1. 2026',
                 author: 'Jan Malý',
                 category: language === 'cs' ? 'Technologie' : 'Technology',
@@ -126,7 +120,6 @@ const BlogPostDetails: React.FC = () => {
                         ? 'Šampion nenávidí prohru více, než miluje výhru. To je ten klíčový rozdíl. V byznysu se často spokojíme s "dobrým výsledkem". Šampion se nespokojí s ničím jiným než s absolutním vrcholem. A právě proto byste měli chtít mít šampiony ve svém týmu. Ne proto, aby vám říkali, jak jste dobří. Ale aby vás donutili podívat se do zrcadla a zeptat se: "Dáváme do toho skutečně všechno?"'
                         : 'A champion hates losing more than they love winning. That is the key difference. In business, we often settle for a "good result". A champion settles for nothing less than the absolute peak. And that\'s why you should want champions on your team. Not to tell you how good you are. But to force you to look in the mirror and ask: "Are we really giving it our all?"',
                 ],
-                image: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&q=80&w=1000',
                 date: '2. 1. 2026',
                 author: 'Talent Restart Team',
                 category: language === 'cs' ? 'Analýza' : 'Analysis',
@@ -142,7 +135,6 @@ const BlogPostDetails: React.FC = () => {
                         ? 'Když se stala členkou představenstva velké korporace, mnoho lidí bylo překvapeno jejím klidem. Kolem zuřily bouře trhu, akcie padaly, konkurence útočila. Alena zůstávala klidná. "Voda je stejná," říkávala. "Když zpanikaříš, utopíš se. Když dýcháš a plaveš, přežiješ." Tento stoický klid se stal kotvou pro celou firmu. Alena dokázala provést společnost krizí ne proto, že znala všechna ekonomická data, ale proto, že se naučila v bazénu jednu klíčovou věc: Dokud dýcháš, máš šanci vyhrát.'
                         : 'When she became a board member of a large corporation, many people were surprised by her calmness. Market storms raged around, stocks fell, competitors attacked. Alena remained calm. "The water is the same," she used to say. "If you panic, you drown. If you breathe and swim, you survive." This stoic calm became an anchor for the whole company. Alena managed to lead the company through the crisis not because she knew all the economic data, but because she learned one key thing in the pool: As long as you breathe, you have a chance to win.',
                 ],
-                image: 'https://images.unsplash.com/photo-1530549387079-7ee0df123479?auto=format&fit=crop&q=80&w=1000',
                 date: '28. 12. 2025',
                 author: 'Martin Svoboda',
                 category: language === 'cs' ? 'Leadership' : 'Leadership',
@@ -158,7 +150,6 @@ const BlogPostDetails: React.FC = () => {
                         ? 'Zatímco konkurence pálila miliony za agresivní kampaně, Tomáš analyzoval data. Hledal slabiny. Čekal. A když viděl, že konkurence vyčerpala rozpočet na neefektivní kanály, spustil chirurgicky přesnou kampaň, která ovládla trh. Jeho klienti mu říkají "The Sniper". On se jen směje a říká: "To není magie, to je jen game, set, match."'
                         : 'While competitors burned millions on aggressive campaigns, Tomas analyzed the data. He looked for weaknesses. He waited. And when he saw their budgets drained on ineffective channels, he launched a surgically precise campaign that dominated the market. His clients call him "The Sniper". He just laughs and says: "It\'s not magic, it\'s just game, set, match."',
                 ],
-                image: 'https://images.unsplash.com/photo-1595435066921-9549d494888a?auto=format&fit=crop&q=80&w=1000',
                 date: '20. 12. 2025',
                 author: 'Petra Černá',
                 category: language === 'cs' ? 'Marketing' : 'Marketing',
@@ -174,7 +165,6 @@ const BlogPostDetails: React.FC = () => {
                         ? 'Její přístup k frontend vývoji je fascinující. Pro ni není webová stránka jen shluk divů. Je to představení. Animace musí být plynulé jako stuha ve vzduchu. Layout musí být vyvážený jako postoj na kladině. Eliška tráví hodiny laděním detailů, které většina lidí ani nepostřehne. Ale právě tyto detaily odlišují dobrý produkt od mistrovského díla. "V gymnastice i v kódu," říká, "se krása skrývá v tom, co vypadá lehce, ale je nejtěžší na provedení."'
                         : 'Her approach to frontend development is fascinating. For her, a website is not just a cluster of divs. It is a performance. Animations must be fluid like a ribbon in the air. The layout must be balanced like a stance on a balance beam. Eliska spends hours tuning details that most people don\'t even notice. But these are the details that distinguish a good product from a masterpiece. "In gymnastics and in code," she says, "beauty lies in what looks easy but is hardest to execute."',
                 ],
-                image: 'https://images.unsplash.com/photo-1547432020-f576e2cacc6d?auto=format&fit=crop&q=80&w=1000',
                 date: '15. 12. 2025',
                 author: 'Jan Malý',
                 category: language === 'cs' ? 'Technologie' : 'Technology',
@@ -193,29 +183,24 @@ const BlogPostDetails: React.FC = () => {
 
     return (
         <div className="bg-background min-h-screen pb-32">
-            {/* Post Header / Hero */}
-            <section className="relative h-[60vh] min-h-[400px] flex items-end">
-                <div className="absolute inset-0 z-0">
-                    <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-                </div>
-
-                <div className="container relative z-10 pb-12 animate-fade-up">
-                    <Link to="/blog" className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-8 group font-bold">
+            {/* Post Header */}
+            <section className="relative pt-32 pb-16 bg-muted/30">
+                <div className="container relative z-10 animate-fade-up">
+                    <Link to="/blog" className="inline-flex items-center gap-2 text-muted-foreground hover:text-talent mb-12 group font-semibold">
                         <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
                         Zpět na příběhy
                     </Link>
                     <div className="space-y-6 max-w-4xl">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-talent rounded-lg text-white text-[10px] font-black uppercase tracking-widest">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-talent/10 text-talent rounded-lg text-xs font-bold">
                             {post.category}
                         </div>
-                        <h1 className="text-4xl md:text-6xl font-black text-white leading-tight">
+                        <h1 className="text-4xl md:text-6xl font-bold text-foreground leading-tight tracking-tight">
                             {post.title}
                         </h1>
-                        <div className="flex flex-wrap items-center gap-6 text-white/60 font-bold text-sm">
-                            <span className="flex items-center gap-2 font-black"><Calendar className="w-4 h-4 text-talent" /> {post.date}</span>
-                            <span className="flex items-center gap-2 font-black"><User className="w-4 h-4 text-restart" /> {post.author}</span>
-                            <span className="flex items-center gap-2 font-black"><Clock className="w-4 h-4" /> {post.readTime} čtení</span>
+                        <div className="flex flex-wrap items-center gap-6 text-muted-foreground font-semibold text-sm pt-4">
+                            <span className="flex items-center gap-2"><Calendar className="w-4 h-4 text-talent" /> {post.date}</span>
+                            <span className="flex items-center gap-2"><User className="w-4 h-4 text-restart" /> {post.author}</span>
+                            <span className="flex items-center gap-2"><Clock className="w-4 h-4" /> {post.readTime} čtení</span>
                         </div>
                     </div>
                 </div>
@@ -226,7 +211,7 @@ const BlogPostDetails: React.FC = () => {
                 <div className="grid lg:grid-cols-12 gap-16">
                     <div className="lg:col-span-8 space-y-10 animate-fade-in stagger-1">
                         {post.content.map((para, i) => (
-                            <p key={i} className="text-xl leading-relaxed text-muted-foreground font-medium first-letter:text-5xl first-letter:font-black first-letter:text-talent first-letter:mr-3 first-letter:float-left">
+                            <p key={i} className="text-xl leading-relaxed text-muted-foreground font-medium">
                                 {para}
                             </p>
                         ))}
@@ -235,7 +220,7 @@ const BlogPostDetails: React.FC = () => {
                             <div className="absolute top-0 right-0 p-8 text-talent/10 transition-colors group-hover:text-talent/20">
                                 <Sparkles className="w-20 h-20" />
                             </div>
-                            <h3 className="text-2xl font-black mb-4">Zaujal vás tento příběh?</h3>
+                            <h3 className="text-2xl font-bold mb-4">Zaujal vás tento příběh?</h3>
                             <p className="text-muted-foreground font-medium mb-8 max-w-md">
                                 Každý sportovec má v sobě skrytý potenciál pro svět byznysu. Pomůžeme vám ho objevit a využít.
                             </p>
@@ -248,7 +233,7 @@ const BlogPostDetails: React.FC = () => {
                     {/* Sidebar / Share */}
                     <div className="lg:col-span-4 space-y-12 animate-fade-in stagger-2 opacity-0">
                         <div className="bg-card border border-border rounded-[2.5rem] p-8 space-y-6">
-                            <h4 className="text-xs font-black uppercase tracking-widest text-muted-foreground">Sdílet příběh</h4>
+                            <h4 className="text-xs font-bold text-muted-foreground">Sdílet příběh</h4>
                             <div className="flex gap-4">
                                 <button className="flex-1 h-12 rounded-xl bg-muted hover:bg-talent hover:text-white transition-all flex items-center justify-center font-bold">
                                     <Share2 className="w-5 h-5" />
@@ -260,16 +245,13 @@ const BlogPostDetails: React.FC = () => {
                         </div>
 
                         <div className="space-y-6">
-                            <h4 className="text-xs font-black uppercase tracking-widest text-muted-foreground">Další příběhy</h4>
+                            <h4 className="text-xs font-bold text-muted-foreground">Další příběhy</h4>
                             <div className="space-y-4">
                                 {/* Small post cards */}
                                 <div className="p-4 bg-card border border-border rounded-2xl flex gap-4 items-center group cursor-pointer hover:border-talent transition-all">
-                                    <div className="w-16 h-16 rounded-xl bg-muted overflow-hidden shrink-0">
-                                        <img src="https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&q=80&w=200" className="w-full h-full object-cover" />
-                                    </div>
                                     <div className="space-y-1">
-                                        <h5 className="font-black text-sm group-hover:text-talent transition-colors line-clamp-2">Mentalita šampiona: Co se v byznysu nenaučíte</h5>
-                                        <div className="flex items-center gap-2 text-[10px] uppercase font-black tracking-widest text-muted-foreground">
+                                        <h5 className="font-bold text-sm group-hover:text-talent transition-colors line-clamp-2">Mentalita šampiona: Co se v byznysu nenaučíte</h5>
+                                        <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground">
                                             <span>2. 1. 2026</span>
                                             <ChevronRight className="w-3 h-3" />
                                         </div>

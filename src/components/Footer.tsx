@@ -25,9 +25,7 @@ export const Footer: React.FC = () => {
               </span>
             </Link>
             <p className="text-muted-foreground font-medium leading-relaxed max-w-xs">
-              {language === 'cs'
-                ? 'První platforma v ČR propojující disciplínu sportovců s příležitostmi ve světě byznysu.'
-                : 'The first platform in CZ connecting athlete discipline with business world opportunities.'}
+              {t('footer.desc')}
             </p>
             <div className="flex items-center gap-4 pt-2">
               {[Linkedin, Instagram, Facebook].map((Icon, i) => (
@@ -41,23 +39,20 @@ export const Footer: React.FC = () => {
           {/* Athletes Links */}
           {(!user || role === 'athlete') && (
             <div className="space-y-6">
-              <h4 className="text-sm font-black uppercase tracking-[0.2em] text-foreground">Pro Sportovce</h4>
+              <h4 className="text-sm font-black uppercase tracking-[0.2em] text-foreground">{t('footer.athletes')}</h4>
               <ul className="space-y-4">
                 <li>
-                  <Link to="/athletes" className="text-muted-foreground hover:text-talent font-medium transition-colors flex items-center gap-2 group">
+                  <Link to="/signup?role=athlete" className="text-muted-foreground hover:text-talent font-medium transition-colors flex items-center gap-2 group">
                     {t('hero.cta.athlete')}
                     <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-50 transition-all" />
                   </Link>
                 </li>
                 <li>
-                  <Link to="/signup?role=athlete" className="text-muted-foreground hover:text-talent font-medium transition-colors">Vytvořit profil</Link>
-                </li>
-                <li>
-                  <Link to="/contact" className="text-muted-foreground hover:text-talent font-medium transition-colors">Kariérní poradenství</Link>
+                  <Link to="/contact" className="text-muted-foreground hover:text-talent font-medium transition-colors">{t('footer.careerAdvice')}</Link>
                 </li>
                 {user && (
                   <li>
-                    <Link to="/blog" className="text-muted-foreground hover:text-talent font-medium transition-colors">Příběhy sportovců</Link>
+                    <Link to="/blog" className="text-muted-foreground hover:text-talent font-medium transition-colors">{t('footer.athleteStories')}</Link>
                   </li>
                 )}
               </ul>
@@ -67,7 +62,7 @@ export const Footer: React.FC = () => {
           {/* Employers Links */}
           {(!user || role === 'employer') && (
             <div className="space-y-6">
-              <h4 className="text-sm font-black uppercase tracking-[0.2em] text-foreground">Pro Firmy</h4>
+              <h4 className="text-sm font-black uppercase tracking-[0.2em] text-foreground">{t('footer.employers')}</h4>
               <ul className="space-y-4">
                 <li>
                   <Link to="/employers" className="text-muted-foreground hover:text-restart font-medium transition-colors flex items-center gap-2 group">
@@ -79,7 +74,7 @@ export const Footer: React.FC = () => {
                   <Link to="/pricing" className="text-muted-foreground hover:text-restart font-medium transition-colors">{t('nav.pricing')}</Link>
                 </li>
                 <li>
-                  <Link to="/contact" className="text-muted-foreground hover:text-restart font-medium transition-colors">Firemní řešení</Link>
+                  <Link to="/contact" className="text-muted-foreground hover:text-restart font-medium transition-colors">{t('footer.businessSolutions')}</Link>
                 </li>
               </ul>
             </div>
@@ -87,7 +82,7 @@ export const Footer: React.FC = () => {
 
           {/* Contact Column */}
           <div className="space-y-6">
-            <h4 className="text-sm font-black uppercase tracking-[0.2em] text-foreground">Kontakt</h4>
+            <h4 className="text-sm font-black uppercase tracking-[0.2em] text-foreground">{t('footer.contact')}</h4>
             <ul className="space-y-4 text-muted-foreground font-medium">
               <li className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-talent" />
@@ -95,7 +90,7 @@ export const Footer: React.FC = () => {
               </li>
               <li className="flex items-center gap-3">
                 <MapPin className="w-4 h-4 text-restart" />
-                <span>Praha, Česká republika</span>
+                <span>{t('footer.location')}</span>
               </li>
             </ul>
           </div>
@@ -107,7 +102,7 @@ export const Footer: React.FC = () => {
         <div className="container flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground/60 uppercase tracking-widest">
             <ShieldCheck className="w-4 h-4" />
-            © {currentYear} Talent Restart. Všechna práva vyhrazena.
+            © {currentYear} Talent Restart. {t('footer.rights')}
           </div>
 
           <Link to="#" className="hover:text-talent transition-colors">Cookies</Link>

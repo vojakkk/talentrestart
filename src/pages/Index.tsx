@@ -9,6 +9,7 @@ import heroAthlete from '@/assets/hero-athlete-clean.png';
 import athleteDashboardHero from '@/assets/athlete-dashboard-hero.png';
 import employerDashboardHero from '@/assets/employer-dashboard-hero.png';
 import tomasEliska from '@/assets/tomas-eliska.png';
+import AICareerAssistantModal from '@/components/AICareerAssistantModal';
 
 const HeroSection: React.FC = () => {
   const { t } = useLanguage();
@@ -47,19 +48,19 @@ const HeroSection: React.FC = () => {
                 isAthlete ? "bg-talent/90 text-white" : "bg-restart/90 text-white"
               )}>
                 {isAthlete ? <Award className="w-4 h-4" /> : <TrendingUp className="w-4 h-4" />}
-                {isAthlete ? 'Vaše kariérní cesta' : 'Talent Dashboard'}
+                {isAthlete ? t('index.hero.athletePath') : t('dash.header')}
               </div>
 
               <h1 className="text-display-sm md:text-display-lg font-black mb-6 animate-fade-up">
                 {isAthlete ? (
                   <>
-                    <span className="block">Vítejte zpět, {firstName}!</span>
-                    <span className="block text-gradient-brand">Vaše příští výzva čeká</span>
+                    <span className="block">{t('index.hero.welcomeBack')}, {firstName}!</span>
+                    <span className="block text-gradient-brand">{t('index.hero.nextChallenge')}</span>
                   </>
                 ) : (
                   <>
-                    <span className="block">Vítejte, {firstName}</span>
-                    <span className="block text-gradient-brand">Objevte další talenty</span>
+                    <span className="block">{t('index.hero.welcomeBack')}, {firstName}</span>
+                    <span className="block text-gradient-brand">{t('index.hero.discoverTalents')}</span>
                   </>
                 )}
               </h1>
@@ -73,13 +74,13 @@ const HeroSection: React.FC = () => {
               <div className="flex flex-col sm:flex-row gap-4 animate-fade-up stagger-2 opacity-0">
                 <Button variant="hero-primary" size="xl" asChild>
                   <Link to="/dashboard">
-                    {isAthlete ? 'Můj Profil & Příležitosti' : 'Prohlížet Kandidáty'}
+                    {isAthlete ? t('header.myCareer') : t('nav.athletes')}
                     <ArrowRight className="h-5 w-5" />
                   </Link>
                 </Button>
                 <Button variant="hero-secondary" size="xl" asChild>
                   <Link to={isAthlete ? "/athletes" : "/blog"}>
-                    {isAthlete ? 'Kariérní Tipy' : 'Příběhy Úspěchu'}
+                    {isAthlete ? t('header.careerTips') : t('index.successStories')}
                   </Link>
                 </Button>
               </div>
@@ -90,26 +91,26 @@ const HeroSection: React.FC = () => {
                   <>
                     <div className="bg-background/60 backdrop-blur-sm rounded-2xl p-4 border border-border/50">
                       <div className="text-2xl font-black text-talent">85%</div>
-                      <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Profil síla</div>
+                      <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{t('index.hero.strength')}</div>
                     </div>
                     <div className="bg-background/60 backdrop-blur-sm rounded-2xl p-4 border border-border/50">
                       <div className="text-2xl font-black text-foreground">3</div>
-                      <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Nové shody</div>
+                      <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{t('index.hero.newMatches')}</div>
                     </div>
                     <div className="bg-background/60 backdrop-blur-sm rounded-2xl p-4 border border-border/50">
                       <div className="text-2xl font-black text-foreground">12</div>
-                      <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Zobrazení</div>
+                      <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{t('index.hero.views')}</div>
                     </div>
                   </>
                 ) : (
                   <>
                     <div className="bg-background/60 backdrop-blur-sm rounded-2xl p-4 border border-border/50">
                       <div className="text-2xl font-black text-restart">1,500+</div>
-                      <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Talenti</div>
+                      <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{t('nav.athletes')}</div>
                     </div>
                     <div className="bg-background/60 backdrop-blur-sm rounded-2xl p-4 border border-border/50">
                       <div className="text-2xl font-black text-foreground">94%</div>
-                      <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Úspěšnost</div>
+                      <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{t('dash.strategyActive')}</div>
                     </div>
                     <div className="bg-background/60 backdrop-blur-sm rounded-2xl p-4 border border-border/50">
                       <div className="text-2xl font-black text-foreground">+12</div>
@@ -209,6 +210,7 @@ const StorySection: React.FC = () => {
 const FeaturesSection: React.FC = () => {
   const { t, language } = useLanguage();
   const { user } = useAuth();
+  const [isAIModalOpen, setIsAIModalOpen] = React.useState(false);
   const role = user?.user_metadata?.role || user?.user_metadata?.user_role || user?.user_metadata?.account_type;
 
   const features = [
@@ -277,11 +279,11 @@ const FeaturesSection: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="flex flex-wrap justify-center gap-8">
           {filteredFeatures.map((feature, index) => (
             <div
               key={index}
-              className="group relative bg-card border border-border rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              className="group relative bg-card border border-border rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 w-full md:w-[calc(50%-2rem)] lg:w-[calc(33.333%-2rem)] max-w-md"
             >
               <div className={`inline-flex items-center justify-center w-14 h-14 rounded-xl mb-6 ${feature.variant === 'talent'
                 ? 'bg-talent-light text-talent'
@@ -295,11 +297,19 @@ const FeaturesSection: React.FC = () => {
               <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
               <p className="text-muted-foreground mb-6">{feature.description}</p>
 
-              <Button variant={feature.variant} size="sm" asChild>
-                <Link to={feature.href}>
-                  {feature.cta}
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
+              <Button
+                variant={feature.variant}
+                size="sm"
+                onClick={() => {
+                  if (feature.id === 'ai') {
+                    setIsAIModalOpen(true);
+                  } else {
+                    window.location.href = feature.href;
+                  }
+                }}
+              >
+                {feature.cta}
+                <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
           ))}
@@ -310,7 +320,7 @@ const FeaturesSection: React.FC = () => {
 };
 
 const BlogPreviewSection: React.FC = () => {
-  const { language } = useLanguage();
+  const { t, language } = useLanguage();
   const { user } = useAuth();
 
   if (!user) return null;
@@ -319,17 +329,17 @@ const BlogPreviewSection: React.FC = () => {
     {
       id: 'maraton-v-byznysu',
       title: language === 'cs' ? 'Z maratonu do byznysu' : 'From Marathon to Business',
-      image: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&q=80&w=400',
+      excerpt: language === 'cs' ? 'Jak vytrvalost z dálkových běhů pomáhá v dlouhodobé obchodní strategii.' : 'How endurance from long-distance running helps in long-term business strategy.'
     },
     {
       id: 'kapitanka-na-lodi',
       title: language === 'cs' ? 'Kapitánka v kanceláři' : 'Captain in the Office',
-      image: 'https://images.unsplash.com/photo-1594470117722-14589d60bd33?auto=format&fit=crop&q=80&w=400',
+      excerpt: language === 'cs' ? 'Vedení týmu pod tlakem: Z paluby jachty do čela projektového oddělení.' : 'Leading a team under pressure: From the deck of a yacht to the head of a project department.'
     },
     {
       id: 'hokejova-houzevnatost',
       title: language === 'cs' ? 'Hokejová houževnatost' : 'Hockey Resilience',
-      image: 'https://images.unsplash.com/photo-1515703407324-5f753eed2349?auto=format&fit=crop&q=80&w=400',
+      excerpt: language === 'cs' ? 'Tvrdá práce a disciplína z ledu jako klíč k úspěchu v korporátním prostředí.' : 'Hard work and discipline from the ice as the key to success in a corporate environment.'
     }
   ];
 
@@ -339,29 +349,33 @@ const BlogPreviewSection: React.FC = () => {
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
           <div>
             <h2 className="text-3xl md:text-4xl font-black mb-4">
-              {language === 'cs' ? 'Příběhy úspěšných' : 'Success Stories'}
+              {t('index.successStories')}
             </h2>
             <p className="text-muted-foreground font-medium max-w-lg">
-              {language === 'cs'
-                ? 'Inspirujte se sportovci, kteří už svůj restart úspěšně zvládli.'
-                : 'Be inspired by athletes who have already successfully managed their restart.'}
+              {t('index.storyDesc')}
             </p>
           </div>
           <Button variant="outline" className="rounded-xl border-2 font-bold" asChild>
-            <Link to="/blog">{language === 'cs' ? 'Všechny příběhy' : 'All stories'}</Link>
+            <Link to="/blog">{t('index.allStories')}</Link>
           </Button>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
           {previews.map((post) => (
-            <Link key={post.id} to={`/blog/${post.id}`} className="group block space-y-4">
-              <div className="aspect-[4/3] rounded-[2rem] overflow-hidden border border-border">
-                <img src={post.image} alt={post.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+            <Link key={post.id} to={`/blog/${post.id}`} className="group block h-full">
+              <div className="bg-card border border-border rounded-[2rem] p-8 h-full transition-all duration-500 hover:shadow-xl hover:shadow-talent/5 hover:-translate-y-1 flex flex-col justify-between">
+                <div className="space-y-4">
+                  <h3 className="text-2xl font-black leading-tight group-hover:text-talent transition-colors">
+                    {post.title}
+                  </h3>
+                  <p className="text-muted-foreground font-medium text-sm leading-relaxed">
+                    {post.excerpt}
+                  </p>
+                </div>
+                <div className="mt-8 flex items-center text-talent font-bold gap-2 text-sm uppercase tracking-wider">
+                  {language === 'cs' ? 'Číst příběh' : language === 'de' ? 'Geschichte lesen' : 'Read story'} <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </div>
               </div>
-              <h3 className="text-xl font-black group-hover:text-talent transition-colors flex items-center justify-between">
-                {post.title}
-                <ChevronRight className="w-5 h-5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-talent" />
-              </h3>
             </Link>
           ))}
         </div>
@@ -378,25 +392,17 @@ const CTASection: React.FC = () => {
     <section className="py-20 md:py-32 bg-gradient-to-br from-talent/10 via-background to-restart/10">
       <div className="container text-center">
         <h2 className="text-display-sm md:text-display-md font-black mb-6">
-          {language === 'cs'
-            ? 'Připraveni na nový začátek?'
-            : language === 'de'
-              ? 'Bereit für einen Neuanfang?'
-              : 'Ready for a new start?'}
+          {t('index.readyStart')}
         </h2>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-10">
-          {language === 'cs'
-            ? 'Připojte se k tisícům sportovců, kteří našli novou kariéru díky Talent Restart.'
-            : language === 'de'
-              ? 'Schließen Sie sich Tausenden von Sportlern an, die dank Talent Restart eine neue Karriere gefunden haben.'
-              : 'Join thousands of athletes who found new careers through Talent Restart.'}
+          {t('index.joinThousands')}
         </p>
 
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           {user ? (
             <Button variant="hero-primary" size="xl" asChild>
               <Link to="/dashboard">
-                Moje nástěnka
+                {t('header.myCareer')}
                 <ArrowRight className="h-5 w-5" />
               </Link>
             </Button>
