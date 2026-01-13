@@ -3,10 +3,18 @@ import { Link } from 'react-router-dom';
 import { Check, ArrowRight, Star, ShieldCheck, Zap, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
+import { useNavigate } from 'react-router-dom';
 
 const Pricing: React.FC = () => {
   const { t, currency, language } = useLanguage();
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const plans = [
     {
@@ -43,6 +51,46 @@ const Pricing: React.FC = () => {
       variant: 'talent' as const,
     },
   ];
+
+  const handlePlanInterest = async (plan: any) => {
+    // If not logged in, just navigate to signup
+    if (!user) {
+      navigate('/signup?role=employer');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const { error } = await supabase
+        .from('submissions')
+        .insert([{
+          name: `${user.user_metadata?.first_name || ''} ${user.user_metadata?.last_name || ''}`.trim() || user.email,
+          email: user.email,
+          role: 'employer',
+          intent: 'waitlist',
+          subject: `Pricing Interest: ${plan.name}`,
+          message: `User responded to ${plan.name} call to action.`,
+          metadata: {
+            plan_name: plan.name,
+            price: plan.priceMonthly,
+            user_id: user.id
+          }
+        }]);
+
+      if (error) throw error;
+
+      toast({
+        title: language === 'cs' ? 'Zájem zaznamenán' : 'Interest recorded',
+        description: language === 'cs' ? 'Děkujeme za váš zájem o tento plán. Brzy vás budeme kontaktovat.' : 'Thank you for your interest. We will contact you shortly.',
+      });
+    } catch (error: any) {
+      console.error('Error recording interest:', error);
+      // Fallback: still navigate even if recording fails to not block the user
+      navigate('/signup?role=employer');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="bg-background">
@@ -135,12 +183,11 @@ const Pricing: React.FC = () => {
                     "w-full h-16 rounded-2xl text-lg font-black transition-all active:scale-95",
                     plan.highlighted ? "shadow-xl shadow-talent/20" : "hover:bg-muted"
                   )}
-                  asChild
+                  onClick={() => handlePlanInterest(plan)}
+                  disabled={isSubmitting}
                 >
-                  <Link to="/signup?role=employer">
-                    {plan.cta}
-                    <ArrowRight className="ml-2 h-6 w-6" />
-                  </Link>
+                  {isSubmitting ? '...' : plan.cta}
+                  <ArrowRight className="ml-2 h-6 w-6" />
                 </Button>
 
                 <p className="text-center text-xs font-bold text-muted-foreground mt-6 uppercase tracking-widest opacity-50">

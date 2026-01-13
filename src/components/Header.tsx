@@ -231,7 +231,7 @@ export const Header: React.FC = () => {
                   }}
                 >
                   <LogOut className="mr-2 h-5 w-5" />
-                  Odhlásit se
+                  {t('header.logout')}
                 </Button>
               )}
             </div>

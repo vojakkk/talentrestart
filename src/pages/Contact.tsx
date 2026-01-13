@@ -42,16 +42,19 @@ const Contact: React.FC = () => {
     const data = {
       name: formData.get('name'),
       email: formData.get('email'),
-      phone: formData.get('phone'),
       role: formData.get('role'),
-      organization: formData.get('organization'),
-      subject: formData.get('subject'),
+      subject: formData.get('subject') || 'General Inquiry',
       message: formData.get('message'),
+      intent: 'contact',
+      metadata: {
+        phone: formData.get('phone'),
+        organization: formData.get('organization')
+      }
     };
 
     try {
       const { error } = await supabase
-        .from('contact_messages')
+        .from('submissions')
         .insert([data]);
 
       if (error) throw error;

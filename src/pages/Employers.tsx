@@ -46,9 +46,9 @@ const Employers: React.FC = () => {
   ];
 
   const stats = [
-    { label: 'Ověřených talentů', value: '1,500+' },
-    { label: 'Úspěšnost spojení', value: '94%' },
-    { label: 'Ušetřený čas', value: '45%' },
+    { label: language === 'cs' ? 'Ověřených talentů' : language === 'de' ? 'Verifizierte Talente' : 'Verified talents', value: '1,500+' },
+    { label: language === 'cs' ? 'Úspěšnost spojení' : language === 'de' ? 'Erfolgsquote' : 'Success rate', value: '94%' },
+    { label: language === 'cs' ? 'Ušetřený čas' : language === 'de' ? 'Zeitersparnis' : 'Time saved', value: '45%' },
   ];
 
   return (
@@ -70,7 +70,7 @@ const Employers: React.FC = () => {
               {/* Floating Stat Card */}
               <div className="absolute -top-10 -right-10 bg-white dark:bg-card p-8 rounded-3xl shadow-xl border border-border animate-fade-up z-20">
                 <div className="flex flex-col gap-1">
-                  <span className="text-sm font-bold text-muted-foreground uppercase tracking-widest">{language === 'cs' ? 'Nábor dokončen' : language === 'de' ? 'Rekrutierung abgeschlossen' : 'Hiring completed'}</span>
+                  <span className="text-sm font-bold text-muted-foreground uppercase tracking-widest">{t('employers.hiringComplete')}</span>
                   <span className="text-3xl font-black text-talent">{language === 'cs' ? '3.5x rycheji' : '3.5x faster'}</span>
                 </div>
               </div>
@@ -83,16 +83,12 @@ const Employers: React.FC = () => {
               </div>
 
               <h1 className="text-display-md md:text-display-lg font-black leading-tight">
-                {language === 'cs'
-                  ? 'Najděte kandidáty, kteří vědí, co je'
-                  : 'Find candidates who know what'}
-                <span className="block text-gradient-brand">{language === 'cs' ? 'skutečný výkon' : 'true performance means'}</span>
+                {t('employers.findingCandidates').split(' ').slice(0, -2).join(' ')}
+                <span className="block text-gradient-brand">{t('employers.findingCandidates').split(' ').slice(-2).join(' ')}</span>
               </h1>
 
               <p className="text-xl text-muted-foreground font-medium leading-relaxed max-w-xl">
-                {language === 'cs'
-                  ? 'Sportovci trénují roky, aby dosáhli špičkových výsledků. Přiveďte tuhle vítěznou mentalitu do své firmy.'
-                  : 'Athletes train for years for peak performance. Bring that winning mentality to your company.'}
+                {t('employers.winningMentality')}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-5 pt-4">
@@ -173,15 +169,15 @@ const Employers: React.FC = () => {
                 <div className="w-12 h-12 bg-talent/10 rounded-xl flex items-center justify-center text-talent">
                   <Zap className="w-6 h-6" />
                 </div>
-                <h4 className="text-xl font-bold">Rychlá integrace</h4>
-                <p className="text-muted-foreground font-medium">Naše platforma se propojí s vaším stávajícím HR procesem během jediného dne.</p>
+                <h4 className="text-xl font-bold">{t('employers.quickInteg')}</h4>
+                <p className="text-muted-foreground font-medium">{t('employers.quickIntegDesc')}</p>
               </div>
               <div className="space-y-4">
                 <div className="w-12 h-12 bg-restart/10 rounded-xl flex items-center justify-center text-restart">
                   <BarChart className="w-6 h-6" />
                 </div>
-                <h4 className="text-xl font-bold">Datová analýza</h4>
-                <p className="text-muted-foreground font-medium">Sledujte metriky svých inzerátů a kvalitu kandidátů v reálném čase přes přehledný dashboard.</p>
+                <h4 className="text-xl font-bold">{t('employers.dataAnal')}</h4>
+                <p className="text-muted-foreground font-medium">{t('employers.dataAnalDesc')}</p>
               </div>
             </div>
           </div>

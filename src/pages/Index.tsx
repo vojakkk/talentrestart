@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { ArrowRight, Users, Briefcase, Sparkles, ChevronRight, TrendingUp, Target, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -210,6 +210,7 @@ const StorySection: React.FC = () => {
 const FeaturesSection: React.FC = () => {
   const { t, language } = useLanguage();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [isAIModalOpen, setIsAIModalOpen] = React.useState(false);
   const role = user?.user_metadata?.role || user?.user_metadata?.user_role || user?.user_metadata?.account_type;
 
@@ -221,10 +222,10 @@ const FeaturesSection: React.FC = () => {
       description: language === 'cs'
         ? 'Vytvořte si profil zdarma a propojte se s zaměstnavateli, kteří oceňují sportovní zkušenosti.'
         : language === 'de'
-          ? 'Erstellen Sie ein kostenloses Profil und verbinden Sie sich mit Arbeitgebern, die sportliche Erfahrung schätzen.'
+          ? 'Erstellen Sie ein komplettes Profil und finden Sie Ihren nächsten Job.'
           : 'Create a free profile and connect with employers who value athletic experience.',
-      cta: t('hero.cta.athlete'),
-      href: '/athletes',
+      cta: language === 'cs' ? 'Vytvořit profil' : 'Create Profile',
+      href: '/signup?role=athlete',
       variant: 'talent' as const,
     },
     {
@@ -236,8 +237,8 @@ const FeaturesSection: React.FC = () => {
         : language === 'de'
           ? 'Finden Sie disziplinierte, ausdauernde Kandidaten mit nachgewiesener Belastbarkeit.'
           : 'Find disciplined, resilient candidates with proven ability to perform under pressure.',
-      cta: t('hero.cta.employer'),
-      href: '/employers',
+      cta: language === 'cs' ? 'Najít sportovní talenty' : 'Find athletic talents',
+      href: '/signup?role=employer',
       variant: 'restart' as const,
     },
     {
@@ -250,8 +251,8 @@ const FeaturesSection: React.FC = () => {
           ? 'Unsere KI hilft Ihnen, sportliche Erfolge in berufliche Sprache zu übersetzen.'
           : 'Our AI helps translate athletic achievements into professional language and improve your CV.',
       cta: language === 'cs' ? 'Zjistit více' : language === 'de' ? 'Mehr erfahren' : 'Learn more',
-      href: '/athletes',
-      variant: 'default' as const,
+      href: '#',
+      variant: 'talent' as const,
     },
   ];
 
@@ -299,22 +300,31 @@ const FeaturesSection: React.FC = () => {
 
               <Button
                 variant={feature.variant}
-                size="sm"
-                onClick={() => {
+                size="lg"
+                className="w-full font-bold rounded-xl shadow-lg"
+                asChild
+                onClick={(e) => {
                   if (feature.id === 'ai') {
+                    e.preventDefault();
                     setIsAIModalOpen(true);
-                  } else {
-                    window.location.href = feature.href;
                   }
                 }}
               >
-                {feature.cta}
-                <ArrowRight className="h-4 w-4" />
+                <Link to={feature.href}>
+                  {feature.cta}
+                  <ArrowRight className="h-4 w-4 ml-2" />
+                </Link>
               </Button>
             </div>
           ))}
         </div>
       </div>
+
+      <AICareerAssistantModal
+        isOpen={isAIModalOpen}
+        onClose={() => setIsAIModalOpen(false)}
+        userName={user?.user_metadata?.first_name || 'Hrdino'}
+      />
     </section>
   );
 };

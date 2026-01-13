@@ -17,6 +17,9 @@ import {
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/lib/supabase';
 import {
     Dialog,
     DialogContent,
@@ -27,10 +30,13 @@ import {
 
 const Jobs = () => {
     const { t, language } = useLanguage();
+    const { user } = useAuth();
+    const { toast } = useToast();
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedJob, setSelectedJob] = useState<any>(null);
     const [activeFilters, setActiveFilters] = useState<string[]>([]);
     const [savedJobs, setSavedJobs] = useState<number[]>([]);
+    const [isApplying, setIsApplying] = useState(false);
 
     const jobs = [
         {
@@ -103,6 +109,53 @@ const Jobs = () => {
 
     const toggleSave = (id: number) => {
         setSavedJobs(prev => prev.includes(id) ? prev.filter(jid => jid !== id) : [...prev, id]);
+    };
+
+    const handleApply = async (job: any) => {
+        if (!user) {
+            toast({
+                title: language === 'cs' ? 'Přihlášení vyžadováno' : 'Login required',
+                description: language === 'cs' ? 'Pro odeslání přihlášky se prosím nejprve přihlaste.' : 'Please log in first to submit your application.',
+                variant: 'destructive',
+            });
+            return;
+        }
+
+        setIsApplying(true);
+        try {
+            const { error } = await supabase
+                .from('submissions')
+                .insert([{
+                    name: `${user.user_metadata?.first_name || ''} ${user.user_metadata?.last_name || ''}`.trim() || user.email,
+                    email: user.email,
+                    role: 'athlete',
+                    intent: 'job_application',
+                    subject: `Application: ${job.title} at ${job.company}`,
+                    message: `Athlete ${user.email} applied for ${job.title}`,
+                    metadata: {
+                        job_id: job.id,
+                        job_title: job.title,
+                        company: job.company,
+                        user_id: user.id
+                    }
+                }]);
+
+            if (error) throw error;
+
+            toast({
+                title: language === 'cs' ? 'Přihláška odeslána' : 'Application sent',
+                description: language === 'cs' ? 'Vaše profil byl úspěšně odeslán zaměstnavateli.' : 'Your profile has been successfully sent to the employer.',
+            });
+            setSelectedJob(null);
+        } catch (error: any) {
+            toast({
+                title: 'Chyba',
+                description: error.message,
+                variant: 'destructive',
+            });
+        } finally {
+            setIsApplying(false);
+        }
     };
 
     return (
@@ -339,8 +392,12 @@ const Jobs = () => {
                             </div>
 
                             <div className="flex gap-4 pt-4">
-                                <Button className="flex-1 h-14 bg-talent hover:bg-talent-dark rounded-2xl text-lg font-black shadow-lg shadow-talent/20">
-                                    Odeslat profil
+                                <Button
+                                    className="flex-1 h-14 bg-talent hover:bg-talent-dark rounded-2xl text-lg font-black shadow-lg shadow-talent/20"
+                                    onClick={() => handleApply(selectedJob)}
+                                    disabled={isApplying}
+                                >
+                                    {isApplying ? 'Odesílám...' : 'Odeslat profil'}
                                 </Button>
                                 <Button
                                     variant="outline"
